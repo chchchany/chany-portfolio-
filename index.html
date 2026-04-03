@@ -937,6 +937,55 @@ body.ch #cr {
 }
 
 /* ═══════════════════════════════════════
+   HOW I WORK / PROCESS
+═══════════════════════════════════════ */
+.process-steps {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 1px; background: var(--border2);
+}
+.proc-card {
+  background: var(--bg); padding: 36px 26px;
+  transition: background .2s; position: relative; overflow: hidden;
+}
+.proc-card:hover { background: var(--bg2); }
+.proc-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg,var(--accent),var(--accent2),transparent);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .45s cubic-bezier(.23,1,.32,1);
+}
+.proc-card:hover::before { transform: scaleX(1); }
+.proc-n {
+  font-family: var(--en); font-size: 10px; letter-spacing: .2em;
+  color: var(--accent); margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
+}
+.proc-n::after { content: ''; flex: 1; height: 1px; background: var(--border2); }
+.proc-icon { font-size: 22px; margin-bottom: 14px; }
+.proc-title { font-size: 15px; font-weight: 800; letter-spacing: -.01em; margin-bottom: 16px; }
+.proc-items { display: flex; flex-direction: column; gap: 6px; }
+.proc-item {
+  font-size: 11px; color: var(--muted); padding: 5px 10px;
+  background: var(--bg2); border: 1px solid var(--border2);
+  transition: color .2s, border-color .2s;
+}
+.proc-card:hover .proc-item { border-color: rgba(88,166,255,0.18); color: var(--text); }
+
+/* Tools row redesign */
+.tool-list { display: flex; flex-direction: column; }
+.tool-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 0; border-bottom: 1px solid var(--border2);
+}
+.tool-row:last-child { border-bottom: none; }
+.tool-name { font-size: 13px; font-weight: 700; min-width: 88px; }
+.tool-use { font-size: 11px; color: var(--muted); flex: 1; }
+.tool-lv {
+  font-size: 9px; font-family: var(--en); letter-spacing: .1em;
+  padding: 2px 8px; border: 1px solid var(--border2); color: var(--dim); white-space: nowrap;
+}
+.tool-lv.hi { color: var(--accent); border-color: var(--border); background: var(--accent-dim); }
+
+/* ═══════════════════════════════════════
    RESPONSIVE
 ═══════════════════════════════════════ */
 @media (max-width: 1024px) {
@@ -944,6 +993,7 @@ body.ch #cr {
   .hero-inner { grid-template-columns: 1fr; }
   .hero-stats-panel { display: none; }
   .proj-card.featured { grid-column: auto; grid-template-columns: 1fr; }
+  .process-steps { grid-template-columns: repeat(3, 1fr); }
 }
 
 @media (max-width: 768px) {
@@ -960,6 +1010,7 @@ body.ch #cr {
   .proj-grid { grid-template-columns: 1fr; }
   .proj-grid-3 { grid-template-columns: 1fr; }
   .proj-card.featured { display: block; }
+  .process-steps { grid-template-columns: 1fr; }
   .skills-grid { grid-template-columns: 1fr; }
   .contact-wrap { grid-template-columns: 1fr; }
   .contact-left { padding: 56px 32px; }
@@ -1007,6 +1058,7 @@ body.ch #cr {
     <a href="#about"    class="nav-item"><span class="nav-icon">◉</span> About</a>
     <a href="#career"   class="nav-item"><span class="nav-icon">◈</span> Career <span class="nav-badge">7년+</span></a>
     <a href="#projects" class="nav-item"><span class="nav-icon">◆</span> Projects <span class="nav-badge">6</span></a>
+    <a href="#process"  class="nav-item"><span class="nav-icon">◇</span> How I Work</a>
     <a href="#skills"   class="nav-item"><span class="nav-icon">◐</span> Skills</a>
     <a href="#contact"  class="nav-item"><span class="nav-icon">◎</span> Contact</a>
   </nav>
@@ -1060,14 +1112,14 @@ body.ch #cr {
           <span class="stat-l">총 경력</span>
         </div>
         <div class="stat-row">
-          <span class="stat-n" data-target="10">0</span>
-          <span class="stat-u">+</span>
-          <span class="stat-l">프로젝트</span>
+          <span class="stat-n" data-target="9">0</span>
+          <span class="stat-u">개</span>
+          <span class="stat-l">런칭 서비스</span>
         </div>
         <div class="stat-row">
-          <span class="stat-n" data-target="3">0</span>
-          <span class="stat-u">개</span>
-          <span class="stat-l">회사</span>
+          <span class="stat-n" data-target="6">0</span>
+          <span class="stat-u">항목</span>
+          <span class="stat-l">TTA 인증 통과</span>
         </div>
       </div>
     </div>
@@ -1511,10 +1563,81 @@ body.ch #cr {
 
   </section>
 
+  <!-- HOW I WORK -->
+  <section class="section" id="process">
+    <div class="sec-hd rv">
+      <span class="sec-num">04</span>
+      <h2 class="sec-title">How I Work</h2>
+      <div class="sec-divider"></div>
+    </div>
+    <div class="process-steps">
+      <div class="proc-card rv">
+        <div class="proc-n">01</div>
+        <div class="proc-icon">🔍</div>
+        <h3 class="proc-title">문제 발견</h3>
+        <div class="proc-items">
+          <span class="proc-item">시장 조사</span>
+          <span class="proc-item">경쟁사 분석</span>
+          <span class="proc-item">유저 인터뷰</span>
+          <span class="proc-item">5 Whys</span>
+          <span class="proc-item">페르소나 설정</span>
+        </div>
+      </div>
+      <div class="proc-card rv" style="--d:.06s">
+        <div class="proc-n">02</div>
+        <div class="proc-icon">🗂</div>
+        <h3 class="proc-title">구조 정의</h3>
+        <div class="proc-items">
+          <span class="proc-item">IA 설계</span>
+          <span class="proc-item">기능 정의</span>
+          <span class="proc-item">정책 수립</span>
+          <span class="proc-item">요구사항 분석</span>
+          <span class="proc-item">우선순위 조정</span>
+        </div>
+      </div>
+      <div class="proc-card rv" style="--d:.12s">
+        <div class="proc-n">03</div>
+        <div class="proc-icon">✏️</div>
+        <h3 class="proc-title">화면 기획</h3>
+        <div class="proc-items">
+          <span class="proc-item">와이어프레임</span>
+          <span class="proc-item">스토리보드</span>
+          <span class="proc-item">UI/UX 기획</span>
+          <span class="proc-item">플로우차트</span>
+          <span class="proc-item">프로토타이핑</span>
+        </div>
+      </div>
+      <div class="proc-card rv" style="--d:.18s">
+        <div class="proc-n">04</div>
+        <div class="proc-icon">🤝</div>
+        <h3 class="proc-title">개발 협업</h3>
+        <div class="proc-items">
+          <span class="proc-item">Jira 스프린트</span>
+          <span class="proc-item">스펙 조율</span>
+          <span class="proc-item">개발자 소통</span>
+          <span class="proc-item">QA 수행</span>
+          <span class="proc-item">버그 대응</span>
+        </div>
+      </div>
+      <div class="proc-card rv" style="--d:.24s">
+        <div class="proc-n">05</div>
+        <div class="proc-icon">📈</div>
+        <h3 class="proc-title">운영 개선</h3>
+        <div class="proc-items">
+          <span class="proc-item">데이터 분석</span>
+          <span class="proc-item">백로그 관리</span>
+          <span class="proc-item">A/B 테스트</span>
+          <span class="proc-item">이슈 트래킹</span>
+          <span class="proc-item">재기획 · 반영</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- SKILLS -->
   <section class="section" id="skills">
     <div class="sec-hd rv">
-      <span class="sec-num">04</span>
+      <span class="sec-num">05</span>
       <h2 class="sec-title">Skills</h2>
       <div class="sec-divider"></div>
     </div>
@@ -1542,12 +1665,42 @@ body.ch #cr {
       </div>
       <div class="sk-panel rv" style="--d:.16s">
         <div class="sk-hd"><span class="sk-icon">🛠</span><h3>Tools</h3></div>
-        <div class="sk-tags">
-          <span class="sk-tag hi">Figma</span><span class="sk-tag hi">Notion</span>
-          <span class="sk-tag hi">Jira</span><span class="sk-tag">Slack</span>
-          <span class="sk-tag">PowerPoint</span><span class="sk-tag">Excel</span>
-          <span class="sk-tag">HTML</span><span class="sk-tag">CSS</span>
-          <span class="sk-tag">JavaScript</span>
+        <div class="tool-list">
+          <div class="tool-row">
+            <span class="tool-name">Figma</span>
+            <span class="tool-use">와이어프레임 · 화면 설계</span>
+            <span class="tool-lv hi">주력</span>
+          </div>
+          <div class="tool-row">
+            <span class="tool-name">Notion</span>
+            <span class="tool-use">기획 문서 · 팀 협업</span>
+            <span class="tool-lv hi">주력</span>
+          </div>
+          <div class="tool-row">
+            <span class="tool-name">Jira</span>
+            <span class="tool-use">스프린트 · 이슈 관리</span>
+            <span class="tool-lv hi">주력</span>
+          </div>
+          <div class="tool-row">
+            <span class="tool-name">Confluence</span>
+            <span class="tool-use">스펙 · 정책 문서화</span>
+            <span class="tool-lv">보조</span>
+          </div>
+          <div class="tool-row">
+            <span class="tool-name">Slack</span>
+            <span class="tool-use">팀 커뮤니케이션</span>
+            <span class="tool-lv">보조</span>
+          </div>
+          <div class="tool-row">
+            <span class="tool-name">GA4</span>
+            <span class="tool-use">데이터 분석 · 지표 확인</span>
+            <span class="tool-lv">보조</span>
+          </div>
+          <div class="tool-row">
+            <span class="tool-name">HTML/CSS</span>
+            <span class="tool-use">직접 퍼블리싱 · 프로토타이핑</span>
+            <span class="tool-lv">활용</span>
+          </div>
         </div>
       </div>
     </div>
