@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>뷰업 — 프로젝트 상세 | Chany</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --sidebar-w: 260px;
+  --bg:        #0a0e14;
+  --bg2:       #0f1520;
+  --bg3:       #141c28;
+  --surface:   #1a2233;
+  --text:      #e8eef6;
+  --muted:     #7d8fa8;
+  --dim:       #3d4f66;
+  --border:    rgba(88,166,255,0.1);
+  --border2:   rgba(255,255,255,0.06);
+  --accent:    #58a6ff;
+  --accent2:   #79c0ff;
+  --accent-dim:  rgba(88,166,255,0.1);
+  --accent-glow: rgba(88,166,255,0.25);
+  --green:     #3fb950;
+  --green-dim: rgba(63,185,80,0.15);
+  --sans: 'Pretendard', 'Space Grotesk', system-ui, sans-serif;
+  --en:   'Space Grotesk', system-ui, sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  display: flex;
+  min-height: 100vh;
+  cursor: none;
+}
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+
+/* ── NOISE ── */
+.noise {
+  position: fixed; inset: 0; z-index: 9998;
+  pointer-events: none; opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+}
+
+/* ── CURSOR ── */
+#cd, #cr {
+  position: fixed; pointer-events: none; z-index: 10000;
+  border-radius: 50%; transform: translate(-50%,-50%);
+}
+#cd { width: 5px; height: 5px; background: var(--accent); transition: opacity .3s; }
+#cr {
+  width: 32px; height: 32px;
+  border: 1px solid rgba(88,166,255,0.45);
+  transition: width .25s, height .25s, border-color .25s, background .25s, opacity .3s;
+}
+body.ch #cr { width: 52px; height: 52px; border-color: var(--accent); background: var(--accent-dim); }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  position: fixed; top: 0; left: 0; bottom: 0;
+  width: var(--sidebar-w); z-index: 200;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+  box-shadow: 2px 0 40px rgba(0,0,0,0.4);
+}
+.sidebar-brand { padding: 36px 28px 28px; border-bottom: 1px solid var(--border2); }
+.brand-avatar {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent) 0%, #1f6feb 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--en); font-size: 18px; font-weight: 800; color: #fff;
+  margin-bottom: 16px; box-shadow: 0 0 20px rgba(88,166,255,0.3);
+}
+.brand-name { font-family: var(--en); font-size: 18px; font-weight: 800; letter-spacing: .1em; display: block; margin-bottom: 5px; }
+.brand-role { font-size: 11px; color: var(--muted); line-height: 1.6; }
+
+.sidebar-status {
+  padding: 14px 28px; border-bottom: 1px solid var(--border2);
+  display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted);
+}
+.status-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green); box-shadow: 0 0 6px var(--green);
+  animation: pulse 2.4s ease-in-out infinite; flex-shrink: 0;
+}
+@keyframes pulse { 0%,100%{opacity:1;box-shadow:0 0 6px var(--green)} 50%{opacity:.5;box-shadow:0 0 12px var(--green)} }
+
+.sidebar-nav { padding: 20px 0; flex: 1; }
+.nav-group-label {
+  font-family: var(--en); font-size: 9px; letter-spacing: .2em;
+  color: var(--dim); text-transform: uppercase; padding: 0 28px 8px;
+  display: flex; align-items: center; gap: 8px;
+}
+.nav-group-label::after { content: ''; flex: 1; height: 1px; background: var(--border2); }
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 28px; font-size: 13px; color: var(--muted);
+  transition: background .15s, color .15s;
+  position: relative; cursor: pointer; user-select: none;
+}
+.nav-item:hover { background: var(--bg3); color: var(--text); }
+.nav-item.active { color: var(--accent); background: var(--accent-dim); }
+.nav-item.active::before {
+  content: ''; position: absolute; left: 0; top: 8px; bottom: 8px;
+  width: 2px; background: var(--accent); border-radius: 0 2px 2px 0;
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+.nav-icon { width: 18px; text-align: center; font-size: 14px; opacity: .7; }
+.nav-item.active .nav-icon { opacity: 1; }
+.nav-badge {
+  margin-left: auto; font-family: var(--en); font-size: 9px;
+  background: var(--accent-dim); color: var(--accent);
+  border: 1px solid var(--border); padding: 2px 7px; border-radius: 20px;
+}
+.sidebar-footer { padding: 20px 28px; border-top: 1px solid var(--border2); }
+.sidebar-links { display: flex; gap: 12px; margin-bottom: 14px; }
+.sb-link {
+  font-family: var(--en); font-size: 10px; letter-spacing: .08em;
+  color: var(--muted); padding: 5px 10px; border: 1px solid var(--border2);
+  transition: border-color .2s, color .2s;
+}
+.sb-link:hover { border-color: var(--accent); color: var(--accent); }
+.sidebar-copy { font-size: 10px; color: var(--dim); }
+
+/* ── MAIN ── */
+.main { margin-left: var(--sidebar-w); flex: 1; min-height: 100vh; min-width: 0; }
+
+/* ── PAGE HEADER ── */
+.page-header {
+  padding: 28px 72px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border2);
+  display: flex; align-items: center; gap: 20px;
+  position: relative;
+}
+.page-header::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, var(--accent) 0%, transparent 40%);
+}
+.back-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--en); font-size: 11px; font-weight: 600; letter-spacing: .06em;
+  color: var(--muted); padding: 8px 18px; border: 1px solid var(--border2);
+  transition: color .2s, border-color .2s, background .2s; flex-shrink: 0;
+}
+.back-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-dim); }
+.ph-divider { width: 1px; height: 18px; background: var(--border2); }
+.ph-crumb { font-size: 12px; color: var(--dim); display: flex; align-items: center; gap: 8px; }
+.ph-crumb .active { color: var(--text); }
+
+/* ── SECTION BASE ── */
+.section { padding: 80px 72px; border-bottom: 1px solid var(--border2); }
+
+.sec-hd { display: flex; align-items: center; gap: 16px; margin-bottom: 52px; }
+.sec-num {
+  font-family: var(--en); font-size: 10px; letter-spacing: .22em;
+  color: var(--accent); background: var(--accent-dim);
+  border: 1px solid var(--border); padding: 5px 12px; text-transform: uppercase;
+}
+.sec-title { font-size: 28px; font-weight: 800; letter-spacing: -.01em; }
+.sec-divider { flex: 1; height: 1px; background: var(--border2); }
+.sec-aside { font-size: 12px; color: var(--dim); letter-spacing: .04em; }
+
+/* ── PROJECT META CARD ── */
+.proj-meta {
+  background: var(--bg2); border: 1px solid var(--border);
+  padding: 32px 36px; margin-bottom: 40px;
+  position: relative; overflow: hidden;
+}
+.proj-meta::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2), transparent);
+}
+.pm-row { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-bottom: 18px; }
+.pm-company {
+  font-family: var(--en); font-size: 10px; letter-spacing: .16em;
+  color: var(--accent); text-transform: uppercase;
+  display: flex; align-items: center; gap: 8px;
+}
+.pm-company::before { content: ''; width: 12px; height: 1px; background: var(--accent); }
+.pm-dot { color: var(--dim); }
+.pm-period { font-family: var(--en); font-size: 12px; color: var(--muted); }
+.pm-badge {
+  font-size: 11px; padding: 3px 12px; border-radius: 20px;
+  background: var(--accent-dim); border: 1px solid var(--border);
+  color: var(--accent); font-weight: 700;
+}
+.pm-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.pm-tag { font-size: 11px; padding: 4px 12px; border: 1px solid var(--border2); color: var(--muted); letter-spacing: .02em; }
+
+/* ── BACKGROUND BLOCK ── */
+.bg-block {
+  padding: 26px 32px; margin-bottom: 48px;
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-left: 3px solid var(--accent);
+}
+.bg-label {
+  font-family: var(--en); font-size: 9px; letter-spacing: .22em;
+  color: var(--accent); text-transform: uppercase;
+  margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+}
+.bg-label::before { content: ''; width: 12px; height: 1px; background: var(--accent); }
+.bg-block p { font-size: 14px; color: var(--muted); line-height: 1.9; }
+
+/* ── SECTION LABEL ── */
+.sub-label {
+  font-family: var(--en); font-size: 9px; letter-spacing: .22em;
+  color: var(--accent); text-transform: uppercase;
+  margin-bottom: 24px; display: flex; align-items: center; gap: 8px;
+}
+.sub-label::before { content: ''; width: 14px; height: 1px; background: var(--accent); }
+
+/* ── WORK CARDS (3-col) ── */
+.work-cards {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--border2);
+  margin-bottom: 56px;
+}
+.wc {
+  background: var(--bg); padding: 38px 32px;
+  position: relative; overflow: hidden; transition: background .2s;
+}
+.wc:hover { background: var(--bg2); }
+.wc::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  transform: scaleX(0); transform-origin: left; transition: transform .4s;
+}
+.wc:hover::after { transform: scaleX(1); }
+.wc-num {
+  font-family: var(--en); font-size: 10px; color: var(--dim); letter-spacing: .16em;
+  margin-bottom: 16px; display: flex; align-items: center; gap: 12px;
+}
+.wc-num::after { content: ''; flex: 1; height: 1px; background: var(--border2); }
+.wc-title { font-size: 17px; font-weight: 800; letter-spacing: -.01em; margin-bottom: 14px; line-height: 1.35; }
+.wc-body { font-size: 13px; color: var(--muted); line-height: 1.85; margin-bottom: 20px; }
+
+.wc-list { display: flex; flex-direction: column; gap: 7px; }
+.wc-li {
+  display: flex; align-items: flex-start; gap: 8px;
+  font-size: 12px; color: var(--muted); line-height: 1.6;
+  padding: 8px 12px; background: var(--bg2); border: 1px solid var(--border2);
+  transition: border-color .2s, background .2s;
+}
+.wc-li:hover { border-color: var(--accent); background: var(--accent-dim); color: var(--text); }
+.wc-li::before { content: '▸'; color: var(--accent); font-size: 9px; margin-top: 3px; flex-shrink: 0; }
+
+/* Mini sections inside card 3 */
+.mini-sec { margin-bottom: 18px; }
+.mini-sec:last-child { margin-bottom: 0; }
+.mini-title {
+  font-size: 11px; font-weight: 700; color: var(--text);
+  padding: 5px 10px; background: var(--bg3);
+  border-left: 2px solid var(--accent);
+  margin-bottom: 8px; letter-spacing: .02em;
+}
+.mini-items { display: flex; flex-direction: column; gap: 5px; }
+.mini-item {
+  font-size: 12px; color: var(--muted); line-height: 1.6;
+  padding: 5px 10px 5px 18px; position: relative;
+}
+.mini-item::before { content: '–'; position: absolute; left: 6px; color: var(--dim); }
+
+/* ── RESULT HIGHLIGHT BOX ── */
+.result-box {
+  background: var(--bg2); border: 1px solid var(--border);
+  padding: 32px 36px; margin-bottom: 48px;
+  position: relative; overflow: hidden;
+}
+.result-box::before {
+  content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 3px;
+  background: linear-gradient(180deg, var(--accent), #1f6feb);
+  box-shadow: 0 0 16px var(--accent-glow);
+}
+.result-label {
+  font-family: var(--en); font-size: 9px; letter-spacing: .22em;
+  color: var(--accent); text-transform: uppercase;
+  margin-bottom: 18px; padding-left: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.result-label::before { content: ''; width: 12px; height: 1px; background: var(--accent); }
+.result-items { display: flex; flex-direction: column; gap: 10px; padding-left: 12px; }
+.result-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 13px; color: var(--text); line-height: 1.65;
+  padding: 10px 16px; background: var(--bg3); border: 1px solid var(--border2);
+  transition: border-color .2s;
+}
+.result-item:hover { border-color: var(--accent); }
+.result-item::before { content: '✦'; color: var(--accent); font-size: 9px; margin-top: 3px; flex-shrink: 0; }
+
+/* ── SCREENSHOTS ── */
+.screenshots {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+}
+.ss-item {
+  border: 1px solid var(--border2); background: var(--bg2);
+  overflow: hidden; transition: border-color .3s, box-shadow .3s;
+}
+.ss-item:hover { border-color: var(--accent); box-shadow: 0 0 28px rgba(88,166,255,0.1); }
+.ss-item img { width: 100%; height: auto; display: block; transition: transform .4s; }
+.ss-item:hover img { transform: scale(1.02); }
+.ss-cap {
+  padding: 10px 16px; background: var(--bg3);
+  border-top: 1px solid var(--border2);
+  font-size: 11px; color: var(--muted); letter-spacing: .04em;
+}
+
+/* ── WORK CARDS (4-col) ── */
+.work-cards-4 {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 1px; background: var(--border2);
+  margin-bottom: 56px;
+}
+
+/* ── SCROLL REVEAL ── */
+.rv { opacity: 0; transform: translateY(22px); transition: opacity .65s ease, transform .65s ease; transition-delay: var(--d,0s); }
+.rv.vis { opacity: 1; transform: none; }
+
+/* ── FOOTER ── */
+.footer {
+  padding: 32px 72px; background: var(--bg2);
+  border-top: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.footer-logo { font-family: var(--en); font-weight: 900; font-size: 14px; letter-spacing: .12em; }
+.footer-copy { font-size: 11px; color: var(--dim); }
+.footer-tag { font-size: 11px; color: var(--muted); }
+
+/* ── MOBILE ── */
+.mob-nav {
+  display: none;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 300;
+  background: var(--bg2); border-bottom: 1px solid var(--border2);
+  padding: 0 24px; height: 56px;
+  align-items: center; justify-content: space-between;
+}
+.mob-logo { font-family: var(--en); font-weight: 800; font-size: 16px; letter-spacing: .1em; }
+.mob-back-link { font-size: 13px; color: var(--accent); }
+
+@media (max-width: 1024px) {
+  :root { --sidebar-w: 220px; }
+  .work-cards { grid-template-columns: 1fr; }
+  .work-cards-4 { grid-template-columns: 1fr; }
+  .screenshots { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .mob-nav { display: flex; }
+  .main { margin-left: 0; padding-top: 56px; }
+  .page-header { padding: 20px 24px; }
+  .section { padding: 56px 24px; }
+  .work-cards { grid-template-columns: 1fr; }
+  .work-cards-4 { grid-template-columns: 1fr; }
+  .screenshots { grid-template-columns: 1fr; }
+  .footer { padding: 28px; flex-direction: column; gap: 8px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<div class="noise"></div>
+<div id="cd"></div>
+<div id="cr"></div>
+
+<nav class="mob-nav">
+  <a href="index.html" class="mob-logo">CHANY</a>
+  <a href="index.html#projects" class="mob-back-link">← Projects</a>
+</nav>
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-avatar">C</div>
+    <span class="brand-name">CHANY</span>
+    <span class="brand-role">Platform &amp; Service PM<br>서비스 기획자</span>
+  </div>
+  <div class="sidebar-status">
+    <span class="status-dot"></span>
+    재직중 · 스마일드래곤
+  </div>
+  <nav class="sidebar-nav">
+    <p class="nav-group-label">메뉴</p>
+    <a href="index.html#home"     class="nav-item"><span class="nav-icon">⌂</span> Home</a>
+    <a href="index.html#about"    class="nav-item"><span class="nav-icon">◉</span> About</a>
+    <a href="index.html#career"   class="nav-item"><span class="nav-icon">◈</span> Career <span class="nav-badge">7년+</span></a>
+    <a href="index.html#projects" class="nav-item active"><span class="nav-icon">◆</span> Projects <span class="nav-badge">6</span></a>
+    <a href="index.html#skills"   class="nav-item"><span class="nav-icon">◐</span> Skills</a>
+    <a href="index.html#contact"  class="nav-item"><span class="nav-icon">◎</span> Contact</a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-links">
+      <a href="mailto:pinkaru92@naver.com" class="sb-link">Email</a>
+      <a href="https://channyk.notion.site/Chany-1d37a970e9ac4ea99c35f7fdbf948f6e" target="_blank" class="sb-link">Archive</a>
+    </div>
+    <p class="sidebar-copy">© 2026 Yuchan Kim</p>
+  </div>
+</aside>
+
+<!-- ═══ MAIN ═══ -->
+<main class="main">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <a href="index.html#projects" class="back-btn">← Projects</a>
+    <div class="ph-divider"></div>
+    <div class="ph-crumb">
+      <span>스마일드래곤</span>
+      <span>›</span>
+      <span class="active">뷰업 프로젝트 상세</span>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════
+       SECTION A. 어드민 대시보드 고도화
+  ════════════════════════════════════════ -->
+  <section class="section" id="admin">
+
+    <div class="sec-hd rv">
+      <span class="sec-num">A</span>
+      <h2 class="sec-title">어드민 대시보드 고도화</h2>
+      <div class="sec-divider"></div>
+      <span class="sec-aside">2024 — 2025</span>
+    </div>
+
+    <!-- 메타 -->
+    <div class="proj-meta rv">
+      <div class="pm-row">
+        <span class="pm-company">스마일드래곤</span>
+        <span class="pm-dot">·</span>
+        <span class="pm-period">2024 — 2025</span>
+        <span class="pm-dot">·</span>
+        <span class="pm-badge">기여도 100% · PM</span>
+      </div>
+      <div class="pm-tags">
+        <span class="pm-tag">데이터 설계</span>
+        <span class="pm-tag">지표 정의</span>
+        <span class="pm-tag">어드민 기획</span>
+        <span class="pm-tag">IA 설계</span>
+        <span class="pm-tag">개발 협업</span>
+      </div>
+    </div>
+
+    <!-- 배경 -->
+    <div class="bg-block rv">
+      <p class="bg-label">배경</p>
+      <p>기존 어드민은 운영 의사결정에 필요한 핵심 데이터가 없거나 흩어져 있어 담당자가 현황을 파악하는 데 과도한 시간이 소요됐다. 계정 오류 현황, 재등록 흐름, 포인트 차감 사유 등 운영 핵심 지표가 시각화되지 않아 장애 대응과 성과 확인이 모두 지연됐다.</p>
+    </div>
+
+    <!-- 카드 3개 -->
+    <p class="sub-label rv">내가 한 일</p>
+    <div class="work-cards rv" style="--d:.06s">
+
+      <!-- 카드 1 -->
+      <div class="wc">
+        <div class="wc-num">01</div>
+        <div class="wc-title">IA 재설계</div>
+        <div class="wc-body">기존에 없던 데이터 분석 탭을 신설하고 대시보드 / 리포트 / 뷰잉통계 3개 하위 탭으로 구조를 나눴다. 날짜 필터를 전체 탭에 공통 적용하는 정책을 수립했다.</div>
+        <div class="wc-list">
+          <div class="wc-li">데이터 분석 탭 신설 — 대시보드 / 리포트 / 뷰잉통계</div>
+          <div class="wc-li">날짜 필터 공통화 — 오늘 · 1주 · 2주 · 30일 · 90일 · 직접입력</div>
+        </div>
+      </div>
+
+      <!-- 카드 2 -->
+      <div class="wc">
+        <div class="wc-num">02</div>
+        <div class="wc-title">대시보드 지표 설계</div>
+        <div class="wc-body">운영팀이 매일 확인해야 하는 수치를 7개 차트로 신규 정의하고 데이터 정책을 수립했다.</div>
+        <div class="wc-list">
+          <div class="wc-li">활동자 수 및 포인트 추이 (꺾은선)</div>
+          <div class="wc-li">계정 승인 요청 현황 (뷰업/뷰플 탭 분리)</div>
+          <div class="wc-li">포인트 현황 (적립 유형별 누적 막대)</div>
+          <div class="wc-li">환급 신청 및 환급금 추이</div>
+          <div class="wc-li">계정 현황 테이블 (플랫폼 탭별 — 활성화/오류/재등록/삭제)</div>
+          <div class="wc-li">누적 적립 포인트 도넛 (플랫폼별)</div>
+          <div class="wc-li">누적 차감 포인트 도넛 (차감 사유별)</div>
+        </div>
+      </div>
+
+      <!-- 카드 3 -->
+      <div class="wc">
+        <div class="wc-num">03</div>
+        <div class="wc-title">리포트 &amp; 뷰잉통계 설계</div>
+
+        <div class="mini-sec">
+          <div class="mini-title">리포트</div>
+          <div class="mini-items">
+            <div class="mini-item">기간 필터 + 신규가입/탈퇴, 로그인/활동자, 환급신청/완료, 적립금액/총보유금액 데이터 카드</div>
+            <div class="mini-item">오늘 선택 시에만 어제 대비 증감률(%) 노출</div>
+            <div class="mini-item">하단 히스토리 테이블: 일자별 누적 데이터</div>
+          </div>
+        </div>
+
+        <div class="mini-sec">
+          <div class="mini-title">뷰잉통계</div>
+          <div class="mini-items">
+            <div class="mini-item">클릭뷰잉 · 오토뷰잉 · 포스팅뷰잉 · 자동적립 · 뷰플 유형별 이용자 수 카드</div>
+            <div class="mini-item">성공 / 실패 / 성공비율 현황 테이블</div>
+            <div class="mini-item">채널 필터(인스타 · 유튜브 · 페이스북 · 스레드 · 네이버) 상세 현황</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.work-cards -->
+
+    <!-- 결과 -->
+    <div class="result-box rv">
+      <p class="result-label">결과</p>
+      <div class="result-items">
+        <div class="result-item">신규 지표 35개+ 정의 — 회원 · 포인트 · 계정 · 환급 · 캠페인 전 영역 커버</div>
+        <div class="result-item">계정 오류 유형 시각화로 CS 대응 속도 개선</div>
+        <div class="result-item">운영팀 일일 현황 파악 시간 단축</div>
+      </div>
+    </div>
+
+    <!-- 스크린샷 -->
+    <p class="sub-label rv">스크린샷</p>
+    <div class="screenshots rv" style="--d:.06s">
+      <div class="ss-item">
+        <img src="대시보드.png" alt="어드민 대시보드">
+        <div class="ss-cap">대시보드 화면</div>
+      </div>
+      <div class="ss-item">
+        <img src="뷰잉통계___클릭뷰잉_클릭_시.png" alt="뷰잉통계 — 클릭뷰잉">
+        <div class="ss-cap">뷰잉통계 — 클릭뷰잉 클릭 시</div>
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- ════════════════════════════════════════
+       SECTION B. 뷰업 서비스 리뉴얼
+  ════════════════════════════════════════ -->
+  <section class="section" id="renewal" style="border-bottom:none">
+
+    <div class="sec-hd rv">
+      <span class="sec-num">B</span>
+      <h2 class="sec-title">뷰업 서비스 리뉴얼</h2>
+      <div class="sec-divider"></div>
+      <span class="sec-aside">2024 — 2025</span>
+    </div>
+
+    <!-- 메타 -->
+    <div class="proj-meta rv">
+      <div class="pm-row">
+        <span class="pm-company">스마일드래곤</span>
+        <span class="pm-dot">·</span>
+        <span class="pm-period">2024 — 2025</span>
+        <span class="pm-dot">·</span>
+        <span class="pm-badge">기여도 100% · PM</span>
+      </div>
+      <div class="pm-tags">
+        <span class="pm-tag">서비스 기획</span>
+        <span class="pm-tag">IA 설계</span>
+        <span class="pm-tag">브랜드 리뉴얼</span>
+        <span class="pm-tag">정책 수립</span>
+        <span class="pm-tag">신규 기능</span>
+      </div>
+    </div>
+
+    <!-- 배경 -->
+    <div class="bg-block rv">
+      <p class="bg-label">배경</p>
+      <p>기존 뷰업은 SNS 클릭 적립 단일 구조로 사용자의 수익 창출 수단이 제한적이었고 브랜드 아이덴티티도 명확하지 않았다. 적립 유형을 확장하고 서비스 전체의 UI/UX와 브랜드를 처음부터 다시 설계했다.</p>
+    </div>
+
+    <!-- 카드 4개 (2×2) -->
+    <p class="sub-label rv">내가 한 일</p>
+    <div class="work-cards-4 rv" style="--d:.06s">
+
+      <!-- 카드 1 · 브랜드 리뉴얼 -->
+      <div class="wc">
+        <div class="wc-num">01</div>
+        <div class="wc-title">브랜드 리뉴얼</div>
+        <div class="wc-body">단순한 적립 앱이 아닌 "뷰잉 활동으로 돈을 버는 서비스"라는 정체성을 시각적으로 표현하고자 했다. 사용자와 감정적으로 연결될 수 있는 캐릭터를 신규 도입하고 로고와 전체 톤앤매너를 새롭게 정의했다.</div>
+        <div class="wc-list">
+          <div class="wc-li">로고 리뉴얼</div>
+          <div class="wc-li">서비스 전용 캐릭터 도입</div>
+          <div class="wc-li">브랜드 가이드 수립</div>
+        </div>
+      </div>
+
+      <!-- 카드 2 · 서비스 구조 재설계 -->
+      <div class="wc">
+        <div class="wc-num">02</div>
+        <div class="wc-title">서비스 구조 재설계</div>
+        <div class="wc-body">클릭 적립 중심으로만 설계된 기존 구조는 적립 유형이 늘어날수록 사용자가 길을 잃는 구조였다. 신규 유형이 추가되어도 자연스럽게 흡수할 수 있도록 GNB와 페이지 구조를 먼저 재설계했다.</div>
+        <div class="wc-list">
+          <div class="wc-li">GNB: 홈 / 뷰잉 / 뷰잉머니 / 마이뷰업 4탭</div>
+          <div class="wc-li">홈: 적립 유형별 진입 유도 + 포인트 현황 + 공지사항</div>
+          <div class="wc-li">뷰잉: 클릭뷰잉 · 포스팅뷰잉 · 보너스뷰잉 · 오토뷰잉</div>
+          <div class="wc-li">마이뷰업: 계정 · 뷰잉머니 · 환급 · 알림 · 고객센터</div>
+        </div>
+      </div>
+
+      <!-- 카드 3 · 적립 유형 확장 -->
+      <div class="wc">
+        <div class="wc-num">03</div>
+        <div class="wc-title">적립 유형 확장</div>
+        <div class="wc-body">클릭 외에 3가지 신규 적립 유형을 기획했다. 각 유형별 신청 · 제출 · 적립 · 패널티 정책을 단독 수립했다.</div>
+        <div class="wc-list">
+          <div class="wc-li">포스팅뷰잉 — 네이버 블로그 포스팅 작성 후 적립</div>
+          <div class="wc-li">보너스뷰잉 — 하루 추가 적립 + 매일 소액 자동 적립 구조</div>
+          <div class="wc-li">오토뷰잉 — 직접 클릭 없이 자동으로 적립되는 구조</div>
+        </div>
+      </div>
+
+      <!-- 카드 4 · 마케팅24 연동 설계 -->
+      <div class="wc">
+        <div class="wc-num">04</div>
+        <div class="wc-title">마케팅24 연동 설계</div>
+        <div class="wc-body">포스팅뷰잉은 마케팅24의 블로그 광고 주문이 뷰업 사용자에게 캠페인으로 연결되는 구조다. 양쪽 플로우를 동시에 설계했다.</div>
+        <div class="wc-list">
+          <div class="wc-li">주문 콘텐츠(가이드라인 · 키워드 · 이미지) 전달 방식 설계</div>
+          <div class="wc-li">제출 링크 유효성 검사 및 광고주 승인 흐름</div>
+          <div class="wc-li">마케팅24 ↔ 뷰업 양쪽 어드민 운영 플로우 설계</div>
+        </div>
+      </div>
+
+    </div><!-- /.work-cards-4 -->
+
+    <!-- 결과 -->
+    <div class="result-box rv">
+      <p class="result-label">결과</p>
+      <div class="result-items">
+        <div class="result-item">클릭 단일 구조 → 클릭뷰잉 · 포스팅뷰잉 · 보너스뷰잉 · 오토뷰잉 4가지 적립 유형으로 확장</div>
+        <div class="result-item">마케팅24 ↔ 뷰업 연결 포스팅 생태계 최초 설계</div>
+        <div class="result-item">신규 서비스 추가 시 구조 변경 없이 확장 가능한 IA 확보</div>
+      </div>
+    </div>
+
+  </section>
+
+
+  <footer class="footer">
+    <span class="footer-logo">CHANY</span>
+    <p class="footer-copy">© 2026 Yuchan Kim. All rights reserved.</p>
+    <p class="footer-tag">니즈를 파악하는 기획자</p>
+  </footer>
+
+</main>
+
+<script>
+/* ── CURSOR ── */
+const cd = document.getElementById('cd'), cr = document.getElementById('cr');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cd.style.left = mx+'px'; cd.style.top = my+'px';
+});
+(function loop(){
+  rx += (mx-rx)*.11; ry += (my-ry)*.11;
+  cr.style.left = rx+'px'; cr.style.top = ry+'px';
+  requestAnimationFrame(loop);
+})();
+document.addEventListener('mouseleave', () => { cd.style.opacity='0'; cr.style.opacity='0'; });
+document.addEventListener('mouseenter', () => { cd.style.opacity='1'; cr.style.opacity='1'; });
+document.querySelectorAll('a, button, .wc, .ss-item, .result-item, .wc-li').forEach(el => {
+  el.addEventListener('mouseenter', () => document.body.classList.add('ch'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('ch'));
+});
+
+/* ── SCROLL REVEAL ── */
+const revObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
+}, { threshold: 0.06, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.rv').forEach(el => revObs.observe(el));
+</script>
+</body>
+</html>

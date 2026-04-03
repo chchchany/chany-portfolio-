@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NFT Town — Chany Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:     #0a0e14;
+  --bg2:    #0f1520;
+  --bg3:    #141c28;
+  --text:   #e8eef6;
+  --muted:  #7d8fa8;
+  --dim:    #3d4f66;
+  --border: rgba(88,166,255,0.1);
+  --border2:rgba(255,255,255,0.06);
+  --accent: #58a6ff;
+  --accent2:#79c0ff;
+  --accent-dim: rgba(88,166,255,0.1);
+  --accent-glow:rgba(88,166,255,0.25);
+  --green:  #3fb950;
+  --green-dim: rgba(63,185,80,0.15);
+  --sans: 'Pretendard', 'Space Grotesk', system-ui, sans-serif;
+  --en:   'Space Grotesk', system-ui, sans-serif;
+}
+html { scroll-behavior: smooth; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); overflow-x: hidden; cursor: none; }
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+
+.noise {
+  position: fixed; inset: 0; z-index: 9998; pointer-events: none; opacity: .025;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+}
+
+#cd, #cr {
+  position: fixed; pointer-events: none; z-index: 10000;
+  border-radius: 50%; transform: translate(-50%,-50%);
+}
+#cd { width: 5px; height: 5px; background: var(--accent); }
+#cr { width: 32px; height: 32px; border: 1px solid rgba(88,166,255,.45); transition: width .25s, height .25s, border-color .25s, background .25s; }
+body.ch #cr { width: 52px; height: 52px; border-color: var(--accent); background: var(--accent-dim); }
+
+/* TOP NAV */
+.topnav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(10,14,20,0.9); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border2);
+  padding: 0 64px; height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.back-btn {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--en); font-size: 13px; color: var(--muted);
+  padding: 8px 18px; border: 1px solid var(--border2);
+  transition: border-color .2s, color .2s, background .2s;
+}
+.back-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+.nav-title { font-family: var(--en); font-size: 13px; color: var(--muted); letter-spacing: .06em; }
+.nav-logo { font-family: var(--en); font-weight: 800; font-size: 15px; letter-spacing: .1em; }
+
+/* HERO */
+.hero {
+  min-height: 100vh; padding: 64px 0 0;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  position: relative; overflow: hidden;
+}
+.hero-glow {
+  position: absolute; width: 700px; height: 700px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(88,166,255,0.06) 0%, transparent 70%);
+  top: -150px; right: -150px; pointer-events: none;
+}
+.hero-grid-lines {
+  position: absolute; inset: 0; pointer-events: none; opacity: .25;
+  background-image:
+    linear-gradient(rgba(88,166,255,0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(88,166,255,0.07) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse 70% 80% at 70% 40%, black 0%, transparent 100%);
+}
+.hero-inner {
+  position: relative; z-index: 1;
+  padding: 80px 80px 72px; max-width: 1100px;
+}
+.hero-crumb {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--en); font-size: 11px; color: var(--dim);
+  letter-spacing: .1em; margin-bottom: 28px;
+}
+.hero-crumb a { color: var(--accent); transition: opacity .2s; }
+.hero-crumb a:hover { opacity: .7; }
+.hero-crumb-sep { color: var(--dim); }
+
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--en); font-size: 11px; letter-spacing: .16em;
+  color: var(--accent); border: 1px solid var(--border);
+  background: var(--accent-dim); padding: 6px 14px; margin-bottom: 24px;
+}
+.hero-h1 {
+  font-size: clamp(36px, 5vw, 72px); font-weight: 900;
+  letter-spacing: -.03em; line-height: 1.05; margin-bottom: 12px;
+}
+.hero-subtitle {
+  font-size: clamp(14px, 2vw, 20px); color: var(--muted);
+  font-style: italic; margin-bottom: 40px; font-weight: 300;
+}
+.hero-meta-row {
+  display: flex; flex-wrap: wrap;
+  border: 1px solid var(--border2); background: var(--bg2); width: fit-content;
+}
+.hm-item {
+  padding: 16px 28px; border-right: 1px solid var(--border2);
+}
+.hm-item:last-child { border-right: none; }
+.hm-label { font-family: var(--en); font-size: 9px; letter-spacing: .2em; color: var(--dim); text-transform: uppercase; display: block; margin-bottom: 5px; }
+.hm-val { font-size: 14px; font-weight: 700; color: var(--text); }
+
+.hero-actions { display: flex; gap: 12px; margin-top: 32px; }
+.btn-p {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 24px; background: var(--accent); color: #0a0e14;
+  font-weight: 700; font-size: 13px; letter-spacing: .04em;
+  transition: transform .2s, box-shadow .2s;
+}
+.btn-p:hover { transform: translateY(-2px); box-shadow: 0 8px 24px var(--accent-glow); }
+.btn-g {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 24px; border: 1px solid var(--border2);
+  font-size: 13px; color: var(--muted);
+  transition: border-color .2s, color .2s, background .2s;
+}
+.btn-g:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+
+/* CONTENT */
+.content { max-width: 1100px; margin: 0 auto; padding: 0 80px 120px; }
+
+.sec { padding: 64px 0; border-top: 1px solid var(--border2); }
+.sec-hd { display: flex; align-items: center; gap: 14px; margin-bottom: 40px; }
+.sec-num {
+  font-family: var(--en); font-size: 9px; letter-spacing: .22em;
+  color: var(--accent); background: var(--accent-dim);
+  border: 1px solid var(--border); padding: 4px 10px;
+}
+.sec-title { font-size: 22px; font-weight: 800; letter-spacing: -.01em; }
+.sec-line { flex: 1; height: 1px; background: var(--border2); }
+
+/* OVERVIEW */
+.overview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border2); }
+.ov-card { background: var(--bg2); padding: 32px; position: relative; overflow: hidden; transition: background .2s; }
+.ov-card:hover { background: var(--bg3); }
+.ov-card::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  transform: scaleX(0); transform-origin: left; transition: transform .4s;
+}
+.ov-card:hover::after { transform: scaleX(1); }
+.ov-label { font-family: var(--en); font-size: 9px; letter-spacing: .2em; color: var(--accent); text-transform: uppercase; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.ov-label::before { content: ''; width: 10px; height: 1px; background: var(--accent); }
+.ov-text { font-size: 14px; color: var(--muted); line-height: 1.8; }
+.ov-text strong { color: var(--text); font-weight: 600; }
+.blist { display: flex; flex-direction: column; gap: 10px; }
+.blist li { font-size: 14px; color: var(--muted); padding-left: 18px; position: relative; line-height: 1.7; }
+.blist li::before { content: '▸'; position: absolute; left: 0; color: var(--accent); font-size: 10px; top: 4px; }
+.blist li strong { color: var(--text); }
+
+/* ROLE */
+.role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.role-card { background: var(--bg2); border: 1px solid var(--border2); padding: 28px; transition: border-color .2s; }
+.role-card:hover { border-color: var(--accent); }
+.rc-title { font-size: 13px; font-weight: 700; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border2); color: var(--text); display: flex; align-items: center; gap: 8px; }
+.rc-title span { font-size: 16px; }
+
+.contrib-item { margin-bottom: 16px; }
+.contrib-item:last-child { margin-bottom: 0; }
+.contrib-label { display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin-bottom: 7px; }
+.contrib-name { color: var(--muted); }
+.contrib-pct { font-family: var(--en); font-weight: 700; color: var(--accent); }
+.contrib-bar { height: 3px; background: var(--border2); border-radius: 2px; overflow: hidden; }
+.contrib-fill {
+  height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 2px; width: 0;
+  transition: width 1.2s cubic-bezier(.23,1,.32,1);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.team-info { display: flex; flex-direction: column; gap: 12px; }
+.team-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--bg3); }
+.team-key { font-size: 12px; color: var(--muted); }
+.team-val { font-size: 13px; font-weight: 700; color: var(--text); }
+
+/* TIMELINE */
+.timeline { display: flex; flex-direction: column; }
+.tl-phase { display: grid; grid-template-columns: 120px 28px 1fr; padding: 28px 0; border-bottom: 1px solid var(--border2); }
+.tl-date { font-family: var(--en); font-size: 11px; color: var(--muted); padding-top: 3px; line-height: 1.6; }
+.tl-spine { display: flex; flex-direction: column; align-items: center; padding-top: 3px; }
+.tl-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent-glow); flex-shrink: 0; }
+.tl-line { width: 1px; flex: 1; background: var(--border2); margin-top: 6px; }
+.tl-body { padding-left: 20px; }
+.tl-phase-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; letter-spacing: -.01em; }
+.tl-phase-sub { font-size: 13px; color: var(--muted); line-height: 1.7; }
+
+/* DELIVERABLES */
+.deliv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border2); }
+.deliv-card { background: var(--bg2); padding: 28px; transition: background .2s; }
+.deliv-card:hover { background: var(--bg3); }
+.deliv-icon { font-size: 28px; margin-bottom: 14px; display: block; }
+.deliv-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+.deliv-desc { font-size: 13px; color: var(--muted); line-height: 1.7; }
+
+/* CONFIDENTIAL NOTICE */
+.confidential {
+  display: flex; align-items: center; gap: 14px;
+  padding: 20px 24px; background: var(--bg2);
+  border: 1px solid rgba(227,179,65,0.2);
+  margin-top: 24px;
+}
+.conf-icon { font-size: 20px; flex-shrink: 0; }
+.conf-text { font-size: 13px; color: var(--muted); line-height: 1.6; }
+.conf-text strong { color: #e3b341; }
+
+/* RESULTS */
+.results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.result-card {
+  padding: 28px; background: var(--bg2);
+  border: 1px solid var(--border2);
+  display: flex; align-items: flex-start; gap: 16px;
+  transition: border-color .2s, transform .2s;
+}
+.result-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.result-icon { font-size: 24px; flex-shrink: 0; }
+.result-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+.result-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* TECH TAGS */
+.tech-tags { display: flex; flex-wrap: wrap; gap: 10px; }
+.tech-tag {
+  font-size: 13px; padding: 8px 18px;
+  background: var(--bg2); border: 1px solid var(--border2);
+  color: var(--muted); transition: border-color .2s, color .2s, background .2s;
+}
+.tech-tag:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+.tech-tag.hi { border-color: var(--border); color: var(--accent); background: var(--accent-dim); }
+
+/* BOTTOM CTA */
+.bottom-cta {
+  margin-top: 80px; padding: 56px 60px;
+  background: var(--bg2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; gap: 32px;
+  position: relative; overflow: hidden;
+}
+.bottom-cta::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2), transparent);
+}
+.cta-label { font-family: var(--en); font-size: 10px; letter-spacing: .2em; color: var(--accent); text-transform: uppercase; margin-bottom: 10px; }
+.cta-title { font-size: 28px; font-weight: 800; letter-spacing: -.02em; margin-bottom: 8px; }
+.cta-desc { font-size: 14px; color: var(--muted); }
+.cta-btns { display: flex; gap: 12px; flex-shrink: 0; }
+
+/* FOOTER */
+.footer {
+  padding: 28px 80px; background: var(--bg2);
+  border-top: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.footer-logo { font-family: var(--en); font-weight: 900; font-size: 14px; letter-spacing: .1em; }
+.footer-copy { font-size: 11px; color: var(--dim); }
+.footer-back { font-family: var(--en); font-size: 11px; color: var(--accent); border-bottom: 1px solid var(--accent-dim); padding-bottom: 1px; }
+.footer-back:hover { border-color: var(--accent); }
+
+/* REVEAL */
+.rv { opacity: 0; transform: translateY(20px); transition: opacity .65s ease, transform .65s ease; transition-delay: var(--d,0s); }
+.rv.vis { opacity: 1; transform: none; }
+
+@media (max-width: 768px) {
+  .topnav { padding: 0 24px; }
+  .hero-inner { padding: 60px 28px 48px; }
+  .content { padding: 0 28px 80px; }
+  .hero-meta-row { flex-direction: column; width: 100%; }
+  .hm-item { border-right: none; border-bottom: 1px solid var(--border2); }
+  .overview-grid, .role-grid, .results-grid { grid-template-columns: 1fr; }
+  .deliv-grid { grid-template-columns: 1fr 1fr; }
+  .bottom-cta { flex-direction: column; padding: 36px 28px; }
+  .footer { padding: 24px 28px; flex-direction: column; gap: 10px; text-align: center; }
+  .tl-phase { grid-template-columns: 90px 24px 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="noise"></div>
+<div id="cd"></div>
+<div id="cr"></div>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <a href="design3.html" class="back-btn">← 포트폴리오로 돌아가기</a>
+  <span class="nav-title">Project Detail</span>
+  <a href="design3.html" class="nav-logo">CHANY</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-grid-lines"></div>
+  <div class="hero-inner">
+    <div class="hero-crumb">
+      <a href="design3.html">Portfolio</a>
+      <span class="hero-crumb-sep">/</span>
+      <span>Projects</span>
+      <span class="hero-crumb-sep">/</span>
+      <span>NFT Town</span>
+    </div>
+    <div class="hero-tag">블록체인 · 서비스 기획 · 다인 프로젝트</div>
+    <h1 class="hero-h1">NFT Town &amp; Brezel Wallet</h1>
+    <p class="hero-subtitle">"NFT 통합 프로젝트"</p>
+    <div class="hero-meta-row">
+      <div class="hm-item">
+        <span class="hm-label">Company</span>
+        <span class="hm-val">ABC × 효성TNS</span>
+      </div>
+      <div class="hm-item">
+        <span class="hm-label">기간</span>
+        <span class="hm-val">2022.07 — 2023.06</span>
+      </div>
+      <div class="hm-item">
+        <span class="hm-label">인원</span>
+        <span class="hm-val">18명</span>
+      </div>
+      <div class="hm-item">
+        <span class="hm-label">역할</span>
+        <span class="hm-val">서비스 기획 · UI/UX · QA</span>
+      </div>
+      <div class="hm-item">
+        <span class="hm-label">최대 기여도</span>
+        <span class="hm-val" style="color:var(--accent)">100%</span>
+      </div>
+    </div>
+    <div class="hero-actions">
+      <a href="https://nfttown.io/" target="_blank" class="btn-p">NFT Town 방문 ↗</a>
+      <a href="https://chromewebstore.google.com/detail/brezel/bhlefjeiebjipahhfnmdicmeeehohaec?hl=ko" target="_blank" class="btn-g">Brezel Wallet 다운로드 ↗</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- 프로젝트 개요 -->
+  <section class="sec rv">
+    <div class="sec-hd">
+      <span class="sec-num">01</span>
+      <h2 class="sec-title">프로젝트 개요</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="overview-grid">
+      <div class="ov-card">
+        <p class="ov-label">배경 · 목적</p>
+        <p class="ov-text">
+          NFT 시장이 빠르게 성장하는 가운데, 여러 플랫폼에 분산된 NFT를 통합 관리하기 어려운 사용자 불편을 해소하기 위해 기획된 프로젝트입니다.<br><br>
+          <strong>NFT Town</strong>은 쉬운 NFT 관리와 사용을 목표로 하는 <strong>NFT 전문 포털 사이트</strong>로, 연동 지갑 <strong>Brezel Wallet</strong>과 함께 제공됩니다.
+        </p>
+      </div>
+      <div class="ov-card">
+        <p class="ov-label">핵심 특징</p>
+        <ul class="blist">
+          <li><strong>NFT 통합 포털</strong> — 여러 체인의 NFT를 한 곳에서 조회·관리</li>
+          <li><strong>Brezel Wallet 연동</strong> — NFT Town 전용 Chrome 확장 지갑 제공</li>
+          <li><strong>효성TNS 파견</strong> — 클라이언트와 외부 업체 간 커뮤니케이션 직접 수행</li>
+          <li><strong>F.O / B.O 동시 기획</strong> — 프론트·백오피스 UI/UX 전반 설계</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 역할 & 기여도 -->
+  <section class="sec rv">
+    <div class="sec-hd">
+      <span class="sec-num">02</span>
+      <h2 class="sec-title">역할 &amp; 기여도</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="role-grid">
+      <div class="role-card">
+        <div class="rc-title"><span>📊</span> 기여도</div>
+        <div class="contrib-item">
+          <div class="contrib-label">
+            <span class="contrib-name">지갑 화면 기획</span>
+            <span class="contrib-pct">100%</span>
+          </div>
+          <div class="contrib-bar"><div class="contrib-fill" data-w="100"></div></div>
+        </div>
+        <div class="contrib-item">
+          <div class="contrib-label">
+            <span class="contrib-name">시장 조사 · 요구사항 인사이트 도출</span>
+            <span class="contrib-pct">80%</span>
+          </div>
+          <div class="contrib-bar"><div class="contrib-fill" data-w="80"></div></div>
+        </div>
+        <div class="contrib-item">
+          <div class="contrib-label">
+            <span class="contrib-name">F.O / B.O 초기 UI/UX 기획</span>
+            <span class="contrib-pct">60%</span>
+          </div>
+          <div class="contrib-bar"><div class="contrib-fill" data-w="60"></div></div>
+        </div>
+        <div class="contrib-item">
+          <div class="contrib-label">
+            <span class="contrib-name">QA 참여</span>
+            <span class="contrib-pct">50%</span>
+          </div>
+          <div class="contrib-bar"><div class="contrib-fill" data-w="50"></div></div>
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="rc-title"><span>👥</span> 팀 구성</div>
+        <div class="team-info">
+          <div class="team-row"><span class="team-key">전체 인원</span><span class="team-val">18명</span></div>
+          <div class="team-row"><span class="team-key">참여 형태</span><span class="team-val">다인 프로젝트 (효성TNS 파견)</span></div>
+          <div class="team-row"><span class="team-key">나의 포지션</span><span class="team-val">서비스 기획자</span></div>
+          <div class="team-row"><span class="team-key">담당 업무</span><span class="team-val">시장조사 · IA · UI/UX · QA</span></div>
+          <div class="team-row"><span class="team-key">외부 커뮤니케이션</span><span class="team-val">클라이언트 · 외부 업체 미팅</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 프로젝트 타임라인 -->
+  <section class="sec rv">
+    <div class="sec-hd">
+      <span class="sec-num">03</span>
+      <h2 class="sec-title">프로젝트 타임라인</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="timeline">
+      <div class="tl-phase">
+        <div class="tl-date">2022.07<br>—<br>2023.01</div>
+        <div class="tl-spine"><div class="tl-dot"></div><div class="tl-line"></div></div>
+        <div class="tl-body">
+          <div class="tl-phase-title">1차 — 기획 · 설계 · 런칭 (약 7개월)</div>
+          <div class="tl-phase-sub">지갑 시장조사 및 클라이언트 요구사항 분석 → IA(기능 정의) 수립 → F.O / B.O 초기 UI/UX 기획 → 지갑 화면 기획 → 개발팀 핸드오프 → QA 참여 → NFT Town 및 Brezel Wallet 1차 런칭.</div>
+        </div>
+      </div>
+      <div class="tl-phase" style="border-bottom:none">
+        <div class="tl-date">2023.01<br>—<br>2023.06</div>
+        <div class="tl-spine"><div class="tl-dot"></div></div>
+        <div class="tl-body">
+          <div class="tl-phase-title">2차 — 고도화 · 안정화 (약 6개월)</div>
+          <div class="tl-phase-sub">1차 런칭 이후 사용자 피드백 반영 및 기능 개선. 추가 요구사항 기획 및 운영 이슈 대응. 지갑 연동 안정화 및 서비스 고도화 완료.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 산출물 -->
+  <section class="sec rv">
+    <div class="sec-hd">
+      <span class="sec-num">04</span>
+      <h2 class="sec-title">주요 산출물</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="deliv-grid">
+      <div class="deliv-card">
+        <span class="deliv-icon">📋</span>
+        <div class="deliv-title">요구사항 정의서</div>
+        <div class="deliv-desc">클라이언트 및 외부 업체 미팅을 통해 도출한 요구사항을 체계적으로 정리. 기획의 기반 문서.</div>
+      </div>
+      <div class="deliv-card">
+        <span class="deliv-icon">📅</span>
+        <div class="deliv-title">WBS (작업 분류 체계)</div>
+        <div class="deliv-desc">전체 프로젝트 일정과 업무를 단계별로 분류한 WBS 작성. 개발팀과의 일정 협의 기준으로 활용.</div>
+      </div>
+      <div class="deliv-card">
+        <span class="deliv-icon">🖼</span>
+        <div class="deliv-title">UI/UX 화면 설계</div>
+        <div class="deliv-desc">NFT Town F.O / B.O 초기 UI/UX 기획 및 Brezel Wallet 지갑 화면 전체 설계. (보안상 일부 공개 불가)</div>
+      </div>
+    </div>
+    <div class="confidential">
+      <span class="conf-icon">🔒</span>
+      <p class="conf-text"><strong>기획 예시 일부 비공개</strong> — 보안상의 이유로 세부 기획 산출물(화면 설계서, 스토리보드 등)은 공개가 제한됩니다. 포트폴리오 미팅 시 별도로 공유 가능합니다.</p>
+    </div>
+  </section>
+
+  <!-- 기술 & 도구 -->
+  <section class="sec rv">
+    <div class="sec-hd">
+      <span class="sec-num">05</span>
+      <h2 class="sec-title">적용 기술 &amp; 도구</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="tech-tags">
+      <span class="tech-tag hi">Figma</span>
+      <span class="tech-tag hi">Notion</span>
+      <span class="tech-tag hi">PowerPoint</span>
+      <span class="tech-tag">블록체인</span>
+      <span class="tech-tag">NFT</span>
+      <span class="tech-tag">Web3</span>
+      <span class="tech-tag">Chrome Extension</span>
+      <span class="tech-tag">IA 설계</span>
+      <span class="tech-tag">UI/UX 기획</span>
+      <span class="tech-tag">WBS</span>
+      <span class="tech-tag">QA</span>
+      <span class="tech-tag">클라이언트 커뮤니케이션</span>
+    </div>
+  </section>
+
+  <!-- 성과 -->
+  <section class="sec rv">
+    <div class="sec-hd">
+      <span class="sec-num">06</span>
+      <h2 class="sec-title">성과</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="results-grid">
+      <div class="result-card">
+        <span class="result-icon">🚀</span>
+        <div>
+          <div class="result-title">NFT Town 성공적 런칭</div>
+          <div class="result-desc">NFT 전문 포털 서비스 1·2차 전 과정 성공 런칭. 기획 의도가 서비스 품질로 이어진 사례.</div>
+        </div>
+      </div>
+      <div class="result-card">
+        <span class="result-icon">🔗</span>
+        <div>
+          <div class="result-title">Brezel Wallet 지갑 연동 성공</div>
+          <div class="result-desc">NFT Town과 연동되는 Brezel Wallet Chrome 확장 프로그램 배포 성공. 지갑–플랫폼 연동 완료.</div>
+        </div>
+      </div>
+      <div class="result-card">
+        <span class="result-icon">🤝</span>
+        <div>
+          <div class="result-title">다자간 협업 경험</div>
+          <div class="result-desc">ABC, 효성TNS, 외부 업체 간 18명 규모 프로젝트에서 기획자로서 클라이언트 요구사항을 조율.</div>
+        </div>
+      </div>
+      <div class="result-card">
+        <span class="result-icon">💡</span>
+        <div>
+          <div class="result-title">요구사항 인사이트 도출</div>
+          <div class="result-desc">클라이언트 미팅을 통한 요구사항 분석 → 사용자 관점 인사이트로 전환하여 기획에 반영.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+</div>
+
+<footer class="footer">
+  <a href="design3.html" class="footer-logo">CHANY</a>
+  <p class="footer-copy">© 2026 Yuchan Kim. All rights reserved.</p>
+  <a href="design3.html" class="footer-back">← 포트폴리오로 돌아가기</a>
+</footer>
+
+<script>
+const cd=document.getElementById('cd'),cr=document.getElementById('cr');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cd.style.left=mx+'px';cd.style.top=my+'px';});
+(function loop(){rx+=(mx-rx)*.11;ry+=(my-ry)*.11;cr.style.left=rx+'px';cr.style.top=ry+'px';requestAnimationFrame(loop);})();
+document.addEventListener('mouseleave',()=>{cd.style.opacity='0';cr.style.opacity='0';});
+document.addEventListener('mouseenter',()=>{cd.style.opacity='1';cr.style.opacity='1';});
+document.querySelectorAll('a,button,.ov-card,.role-card,.deliv-card,.result-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('ch'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('ch'));
+});
+
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis');});
+},{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+
+const barObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.contrib-fill').forEach(bar=>{bar.style.width=bar.dataset.w+'%';});
+      barObs.unobserve(e.target);
+    }
+  });
+},{threshold:0.3});
+document.querySelectorAll('.role-card').forEach(el=>barObs.observe(el));
+</script>
+</body>
+</html>
