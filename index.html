@@ -90,7 +90,7 @@ body.ch #cr {
   background: var(--bg2);
   border-right: 1px solid var(--border);
   display: flex; flex-direction: column;
-  overflow-y: auto;
+  overflow-y: hidden;
   /* subtle left glow */
   box-shadow: 2px 0 40px rgba(0,0,0,0.4);
 }
@@ -102,12 +102,16 @@ body.ch #cr {
   position: relative;
 }
 .brand-avatar {
-  width: 48px; height: 48px; border-radius: 12px;
+  width: 64px; height: 64px; border-radius: 50%;
   background: linear-gradient(135deg, var(--accent) 0%, #1f6feb 100%);
   display: flex; align-items: center; justify-content: center;
   font-family: var(--en); font-size: 18px; font-weight: 800;
   color: #fff; margin-bottom: 16px;
   box-shadow: 0 0 20px rgba(88,166,255,0.3);
+  overflow: hidden;
+}
+.brand-avatar img {
+  width: 100%; height: 100%; object-fit: cover; object-position: center top;
 }
 .brand-name {
   font-family: var(--en); font-size: 18px; font-weight: 800;
@@ -1042,7 +1046,7 @@ body.ch #cr {
 <!-- ═══ SIDEBAR ═══ -->
 <aside class="sidebar">
   <div class="sidebar-brand">
-    <div class="brand-avatar">C</div>
+    <div class="brand-avatar"><img src="profile_cropped.jpg" alt="Chany"></div>
     <span class="brand-name">CHANY</span>
     <span class="brand-role">Platform &amp; Service PM<br>서비스 기획자</span>
   </div>
