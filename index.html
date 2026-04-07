@@ -102,7 +102,7 @@ body.ch #cr {
   position: relative;
 }
 .brand-avatar {
-  width: 64px; height: 64px; border-radius: 50%;
+  width: 84px; height: 84px; border-radius: 50%;
   background: linear-gradient(135deg, var(--accent) 0%, #1f6feb 100%);
   display: flex; align-items: center; justify-content: center;
   font-family: var(--en); font-size: 18px; font-weight: 800;
@@ -941,6 +941,95 @@ body.ch #cr {
 }
 
 /* ═══════════════════════════════════════
+   MOBILE FULLSCREEN MENU
+═══════════════════════════════════════ */
+.mob-menu {
+  display: none;
+  position: fixed; inset: 0; z-index: 500;
+  background: var(--bg);
+  flex-direction: column;
+  overflow-y: auto;
+}
+.mob-menu.open { display: flex; }
+
+.mob-menu-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 56px;
+  border-bottom: 1px solid var(--border2);
+  flex-shrink: 0;
+}
+.mob-menu-logo { font-family: var(--en); font-weight: 800; font-size: 16px; letter-spacing: .1em; }
+.mob-close {
+  background: none; border: none; cursor: pointer; padding: 8px;
+  color: var(--text); font-size: 22px; line-height: 1;
+}
+
+.mob-profile {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 40px 24px 32px;
+  border-bottom: 1px solid var(--border2);
+  flex-shrink: 0;
+}
+.mob-avatar {
+  width: 88px; height: 88px; border-radius: 50%;
+  overflow: hidden; margin-bottom: 18px;
+  border: 2px solid var(--border);
+  box-shadow: 0 0 24px rgba(88,166,255,0.2);
+}
+.mob-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+.mob-name {
+  font-family: var(--en); font-size: 22px; font-weight: 800;
+  letter-spacing: .1em; margin-bottom: 6px;
+}
+.mob-role {
+  font-size: 12px; color: var(--muted); text-align: center; line-height: 1.6;
+  margin-bottom: 14px;
+}
+.mob-status {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 11px; color: var(--muted);
+  background: var(--bg2); border: 1px solid var(--border2);
+  padding: 5px 14px; border-radius: 20px;
+}
+
+.mob-nav-list {
+  display: flex; flex-direction: column;
+  padding: 16px 0; flex: 1;
+}
+.mob-nav-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 32px;
+  font-size: 18px; font-weight: 700; letter-spacing: -.01em;
+  color: var(--text-muted); border-bottom: 1px solid var(--border2);
+  transition: color .2s, background .2s;
+}
+.mob-nav-item:last-child { border-bottom: none; }
+.mob-nav-item:hover, .mob-nav-item:active { color: var(--accent); background: var(--bg2); }
+.mob-nav-icon { font-size: 16px; opacity: .6; width: 20px; text-align: center; }
+.mob-nav-badge {
+  margin-left: auto; font-family: var(--en); font-size: 9px;
+  background: var(--accent-dim); color: var(--accent);
+  border: 1px solid var(--border); padding: 2px 7px;
+  border-radius: 20px; letter-spacing: .04em;
+}
+
+.mob-menu-footer {
+  padding: 24px 32px;
+  border-top: 1px solid var(--border2);
+  display: flex; flex-direction: column; gap: 14px;
+  flex-shrink: 0;
+}
+.mob-links { display: flex; gap: 10px; }
+.mob-link {
+  font-family: var(--en); font-size: 10px; letter-spacing: .08em;
+  color: var(--muted); padding: 6px 14px;
+  border: 1px solid var(--border2);
+  transition: border-color .2s, color .2s;
+}
+.mob-link:hover { border-color: var(--accent); color: var(--accent); }
+.mob-copy { font-size: 10px; color: var(--dim); }
+
+/* ═══════════════════════════════════════
    HOW I WORK / PROCESS
 ═══════════════════════════════════════ */
 .process-steps {
@@ -1042,6 +1131,36 @@ body.ch #cr {
     <span></span><span></span><span></span>
   </button>
 </nav>
+
+<!-- ═══ MOBILE FULLSCREEN MENU ═══ -->
+<div class="mob-menu" id="mobMenu">
+  <div class="mob-menu-head">
+    <span class="mob-menu-logo">CHANY</span>
+    <button class="mob-close" id="mobClose" aria-label="닫기">✕</button>
+  </div>
+  <div class="mob-profile">
+    <div class="mob-avatar"><img src="profile_cropped.jpg" alt="Chany"></div>
+    <p class="mob-name">CHANY</p>
+    <p class="mob-role">Platform &amp; Service PM<br>서비스 기획자</p>
+    <div class="mob-status"><span class="status-dot"></span>재직중 · 스마일드래곤</div>
+  </div>
+  <nav class="mob-nav-list">
+    <a href="#home"     class="mob-nav-item"><span class="mob-nav-icon">⌂</span> Home</a>
+    <a href="#about"    class="mob-nav-item"><span class="mob-nav-icon">◉</span> About</a>
+    <a href="#career"   class="mob-nav-item"><span class="mob-nav-icon">◈</span> Career <span class="mob-nav-badge">7년+</span></a>
+    <a href="#projects" class="mob-nav-item"><span class="mob-nav-icon">◆</span> Projects <span class="mob-nav-badge">6</span></a>
+    <a href="#process"  class="mob-nav-item"><span class="mob-nav-icon">◇</span> How I Work</a>
+    <a href="#skills"   class="mob-nav-item"><span class="mob-nav-icon">◐</span> Skills</a>
+    <a href="#contact"  class="mob-nav-item"><span class="mob-nav-icon">◎</span> Contact</a>
+  </nav>
+  <div class="mob-menu-footer">
+    <div class="mob-links">
+      <a href="mailto:pinkaru92@naver.com" class="mob-link">Email</a>
+      <a href="https://channyk.notion.site/Chany-1d37a970e9ac4ea99c35f7fdbf948f6e" target="_blank" class="mob-link">Archive</a>
+    </div>
+    <p class="mob-copy">© 2026 Yuchan Kim</p>
+  </div>
+</div>
 
 <!-- ═══ SIDEBAR ═══ -->
 <aside class="sidebar">
@@ -1851,6 +1970,26 @@ function updateActive() {
 }
 window.addEventListener('scroll', updateActive, { passive: true });
 updateActive();
+
+/* ── MOBILE MENU TOGGLE ── */
+const mobMenu = document.getElementById('mobMenu');
+const mobToggle = document.querySelector('.mob-toggle');
+const mobClose = document.getElementById('mobClose');
+
+mobToggle.addEventListener('click', () => {
+  mobMenu.classList.add('open');
+  document.body.style.overflow = 'hidden';
+});
+mobClose.addEventListener('click', () => {
+  mobMenu.classList.remove('open');
+  document.body.style.overflow = '';
+});
+document.querySelectorAll('.mob-nav-item').forEach(a => {
+  a.addEventListener('click', () => {
+    mobMenu.classList.remove('open');
+    document.body.style.overflow = '';
+  });
+});
 
 /* ── SMOOTH SCROLL ── */
 document.querySelectorAll('a[href^="#"]').forEach(a => {
