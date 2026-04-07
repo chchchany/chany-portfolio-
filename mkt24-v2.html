@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>마케팅24 신규 서비스 확장 — 스마일드래곤 | Chany</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --sidebar-w: 220px;
+  --bg: #0a0e14; --bg2: #0f1520; --bg3: #141c28;
+  --text: #e8eef6; --muted: #7d8fa8; --dim: #3d4f66;
+  --border: rgba(88,166,255,0.1); --border2: rgba(255,255,255,0.06);
+  --accent: #58a6ff; --accent2: #79c0ff;
+  --accent-dim: rgba(88,166,255,0.1); --accent-glow: rgba(88,166,255,0.25);
+  --green: #3fb950; --green-dim: rgba(63,185,80,0.15);
+  --sans: 'Pretendard','Space Grotesk',system-ui,sans-serif;
+  --en: 'Space Grotesk',system-ui,sans-serif;
+}
+html { scroll-behavior: smooth; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); overflow-x: hidden; display: flex; min-height: 100vh; cursor: none; }
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+
+/* Noise */
+.noise { position: fixed; inset: 0; z-index: 9998; pointer-events: none; opacity: 0.025; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E"); background-size: 200px; }
+
+/* Cursor */
+#cd,#cr { position: fixed; pointer-events: none; z-index: 10000; border-radius: 50%; transform: translate(-50%,-50%); }
+#cd { width: 5px; height: 5px; background: var(--accent); transition: opacity .3s; }
+#cr { width: 32px; height: 32px; border: 1px solid rgba(88,166,255,0.45); transition: width .25s,height .25s,border-color .25s,background .25s,opacity .3s; }
+body.ch #cr { width: 52px; height: 52px; border-color: var(--accent); background: var(--accent-dim); }
+
+/* Sidebar */
+.sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 200; background: var(--bg2); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; box-shadow: 2px 0 40px rgba(0,0,0,0.4); }
+.sidebar-brand { padding: 36px 28px 28px; border-bottom: 1px solid var(--border2); }
+.brand-avatar { width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg,var(--accent) 0%,#1f6feb 100%); display: flex; align-items: center; justify-content: center; font-family: var(--en); font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 16px; box-shadow: 0 0 20px rgba(88,166,255,0.3); }
+.brand-name { font-family: var(--en); font-size: 18px; font-weight: 800; letter-spacing: .1em; display: block; margin-bottom: 5px; }
+.brand-role { font-size: 11px; color: var(--muted); line-height: 1.6; }
+.sidebar-status { padding: 14px 28px; border-bottom: 1px solid var(--border2); display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse 2.4s ease-in-out infinite; flex-shrink: 0; }
+@keyframes pulse { 0%,100%{opacity:1;box-shadow:0 0 6px var(--green)} 50%{opacity:.5;box-shadow:0 0 12px var(--green)} }
+.sidebar-nav { padding: 20px 0; flex: 1; }
+.nav-group-label { font-family: var(--en); font-size: 9px; letter-spacing: .2em; color: var(--dim); text-transform: uppercase; padding: 0 28px 8px; display: flex; align-items: center; gap: 8px; }
+.nav-group-label::after { content: ''; flex: 1; height: 1px; background: var(--border2); }
+.nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 28px; font-size: 13px; color: var(--muted); transition: background .15s,color .15s; position: relative; cursor: pointer; }
+.nav-item:hover { background: var(--bg3); color: var(--text); }
+.nav-item.active { color: var(--accent); background: var(--accent-dim); }
+.nav-item.active::before { content: ''; position: absolute; left: 0; top: 8px; bottom: 8px; width: 2px; background: var(--accent); border-radius: 0 2px 2px 0; box-shadow: 0 0 8px var(--accent-glow); }
+.nav-icon { width: 18px; text-align: center; font-size: 14px; opacity: .7; }
+.nav-item.active .nav-icon { opacity: 1; }
+.nav-badge { margin-left: auto; font-family: var(--en); font-size: 9px; background: var(--accent-dim); color: var(--accent); border: 1px solid var(--border); padding: 2px 7px; border-radius: 20px; }
+.sidebar-footer { padding: 20px 28px; border-top: 1px solid var(--border2); }
+.sidebar-links { display: flex; gap: 12px; margin-bottom: 14px; }
+.sb-link { font-family: var(--en); font-size: 10px; letter-spacing: .08em; color: var(--muted); padding: 5px 10px; border: 1px solid var(--border2); transition: border-color .2s,color .2s; }
+.sb-link:hover { border-color: var(--accent); color: var(--accent); }
+.sidebar-copy { font-size: 10px; color: var(--dim); }
+
+/* Layout */
+.main { margin-left: var(--sidebar-w); flex: 1; min-height: 100vh; min-width: 0; }
+
+/* Page header */
+.page-header { padding: 28px 72px; background: var(--bg2); border-bottom: 1px solid var(--border2); display: flex; align-items: center; gap: 20px; position: relative; }
+.page-header::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg,var(--accent) 0%,transparent 40%); }
+.back-btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--en); font-size: 11px; font-weight: 600; letter-spacing: .06em; color: var(--muted); padding: 8px 18px; border: 1px solid var(--border2); transition: color .2s,border-color .2s,background .2s; flex-shrink: 0; }
+.back-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-dim); }
+.ph-divider { width: 1px; height: 18px; background: var(--border2); }
+.ph-crumb { font-size: 12px; color: var(--dim); display: flex; align-items: center; gap: 8px; }
+.ph-crumb .active { color: var(--text); }
+
+/* Hero */
+.proj-hero { padding: 64px 72px 56px; border-bottom: 1px solid var(--border2); position: relative; overflow: hidden; }
+.proj-hero::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(88,166,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(88,166,255,0.04) 1px,transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(ellipse 80% 80% at 20% 50%,black 0%,transparent 100%); pointer-events: none; }
+.hero-eyebrow { font-family: var(--en); font-size: 10px; letter-spacing: .2em; color: var(--accent); text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px; padding: 6px 14px; background: var(--accent-dim); border: 1px solid var(--border); }
+.hero-title { font-size: clamp(28px,3.5vw,48px); font-weight: 900; letter-spacing: -.03em; line-height: 1.15; margin-bottom: 20px; }
+.hero-title .accent { color: var(--accent); }
+.hero-desc { font-size: 14px; color: var(--muted); line-height: 1.9; max-width: 620px; margin-bottom: 32px; }
+.hero-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+.meta-chip { font-size: 11px; padding: 5px 14px; border: 1px solid var(--border2); color: var(--muted); letter-spacing: .03em; }
+.meta-chip.hi { border-color: var(--border); color: var(--accent); background: var(--accent-dim); }
+
+/* Phase block */
+.phase-block { border-bottom: 1px solid var(--border2); }
+.phase-header { padding: 48px 72px 40px; background: var(--bg2); border-bottom: 1px solid var(--border2); position: relative; overflow: hidden; }
+.phase-header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg,var(--accent),var(--accent2),transparent 60%); }
+.phase-eyebrow { font-family: var(--en); font-size: 9px; letter-spacing: .22em; color: var(--accent); text-transform: uppercase; margin-bottom: 10px; }
+.phase-title { font-size: 24px; font-weight: 900; letter-spacing: -.02em; margin-bottom: 6px; }
+.phase-period { font-family: var(--en); font-size: 12px; color: var(--muted); letter-spacing: .04em; margin-bottom: 20px; }
+.phase-intro { font-size: 14px; color: var(--muted); line-height: 1.9; max-width: 640px; }
+
+/* Work section inside phase */
+.work-section { padding: 56px 72px; border-bottom: 1px solid var(--border2); }
+.work-section:last-child { border-bottom: none; }
+.work-hd { display: flex; align-items: center; gap: 14px; margin-bottom: 32px; }
+.work-num { font-family: var(--en); font-size: 9px; letter-spacing: .22em; color: var(--accent); background: var(--accent-dim); border: 1px solid var(--border); padding: 4px 10px; text-transform: uppercase; }
+.work-title { font-size: 18px; font-weight: 800; letter-spacing: -.01em; }
+.work-divider { flex: 1; height: 1px; background: var(--border2); }
+
+/* 3-col / 2-col card grids */
+.tri-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border2); }
+.duo-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1px; background: var(--border2); }
+.mono-grid { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--border2); }
+.tc { background: var(--bg); padding: 32px 28px; position: relative; overflow: hidden; transition: background .2s; }
+.tc:hover { background: var(--bg2); }
+.tc::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg,var(--accent),transparent); transform: scaleX(0); transform-origin: left; transition: transform .4s; }
+.tc:hover::after { transform: scaleX(1); }
+.tc-label { font-family: var(--en); font-size: 9px; letter-spacing: .2em; color: var(--accent); text-transform: uppercase; margin-bottom: 10px; }
+.tc-title { font-size: 15px; font-weight: 800; margin-bottom: 12px; }
+.tc-body { font-size: 13px; color: var(--muted); line-height: 1.85; }
+.tc-list { margin-top: 10px; display: flex; flex-direction: column; gap: 5px; }
+.tc-list li { font-size: 12px; color: var(--muted); line-height: 1.65; padding-left: 14px; position: relative; }
+.tc-list li::before { content: '–'; position: absolute; left: 0; color: var(--accent); }
+
+/* Result box */
+.result-box { margin: 56px 72px; background: var(--bg2); border: 1px solid var(--border); padding: 40px 44px; }
+.result-label { font-family: var(--en); font-size: 9px; letter-spacing: .22em; color: var(--accent); text-transform: uppercase; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
+.result-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.result-list { display: flex; flex-direction: column; gap: 12px; }
+.result-item { display: flex; align-items: flex-start; gap: 14px; font-size: 14px; color: var(--text); line-height: 1.65; }
+.result-item::before { content: '✦'; color: var(--accent); font-size: 10px; margin-top: 4px; flex-shrink: 0; }
+
+/* Scroll reveal */
+.rv { opacity: 0; transform: translateY(20px); transition: opacity .6s,transform .6s; transition-delay: var(--d,0s); }
+.rv.vis { opacity: 1; transform: none; }
+
+/* Footer */
+.footer { padding: 32px 72px; background: var(--bg2); border-top: 1px solid var(--border2); display: flex; align-items: center; justify-content: space-between; }
+.footer-logo { font-family: var(--en); font-weight: 900; font-size: 14px; letter-spacing: .12em; }
+.footer-copy { font-size: 11px; color: var(--dim); }
+.footer-tag { font-size: 11px; color: var(--muted); }
+
+/* Mobile nav */
+.mob-nav { display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 300; background: var(--bg2); border-bottom: 1px solid var(--border2); padding: 0 24px; height: 56px; align-items: center; justify-content: space-between; }
+.mob-logo { font-family: var(--en); font-weight: 800; font-size: 16px; letter-spacing: .1em; }
+.mob-back-link { font-size: 13px; color: var(--accent); }
+
+@media (max-width: 1024px) {
+  :root { --sidebar-w: 200px; }
+  .tri-grid { grid-template-columns: 1fr; }
+  .duo-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .mob-nav { display: flex; }
+  .main { margin-left: 0; padding-top: 56px; }
+  .page-header { padding: 20px 24px; }
+  .proj-hero { padding: 48px 24px; }
+  .phase-header { padding: 36px 24px 32px; }
+  .work-section { padding: 40px 24px; }
+  .result-box { margin: 40px 24px; }
+  .tri-grid,.duo-grid,.mono-grid { grid-template-columns: 1fr; }
+  .footer { padding: 28px 24px; flex-direction: column; gap: 8px; text-align: center; }
+}
+</style>
+</head>
+<body>
+<div class="noise"></div>
+<div id="cd"></div><div id="cr"></div>
+
+<nav class="mob-nav">
+  <a href="index.html" class="mob-logo">CHANY</a>
+  <a href="index.html#projects" class="mob-back-link">← Projects</a>
+</nav>
+
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-avatar">C</div>
+    <span class="brand-name">CHANY</span>
+    <span class="brand-role">Platform &amp; Service PM<br>서비스 기획자</span>
+  </div>
+  <div class="sidebar-status"><span class="status-dot"></span> 재직중 · 스마일드래곤</div>
+  <nav class="sidebar-nav">
+    <p class="nav-group-label">메뉴</p>
+    <a href="index.html#home"     class="nav-item"><span class="nav-icon">⌂</span> Home</a>
+    <a href="index.html#about"    class="nav-item"><span class="nav-icon">◉</span> About</a>
+    <a href="index.html#career"   class="nav-item"><span class="nav-icon">◈</span> Career <span class="nav-badge">7년+</span></a>
+    <a href="index.html#projects" class="nav-item active"><span class="nav-icon">◆</span> Projects <span class="nav-badge">8</span></a>
+    <a href="index.html#skills"   class="nav-item"><span class="nav-icon">◐</span> Skills</a>
+    <a href="index.html#contact"  class="nav-item"><span class="nav-icon">◎</span> Contact</a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-links">
+      <a href="mailto:pinkaru92@naver.com" class="sb-link">Email</a>
+      <a href="https://channyk.notion.site/Chany-1d37a970e9ac4ea99c35f7fdbf948f6e" target="_blank" class="sb-link">Archive</a>
+    </div>
+    <p class="sidebar-copy">© 2026 Yuchan Kim</p>
+  </div>
+</aside>
+
+<main class="main">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <a href="index.html#projects" class="back-btn">← Projects</a>
+    <div class="ph-divider"></div>
+    <div class="ph-crumb"><span>스마일드래곤</span><span>›</span><span class="active">마케팅24 신규 서비스 확장</span></div>
+  </div>
+
+  <!-- Hero -->
+  <div class="proj-hero rv">
+    <div class="hero-eyebrow">스마일드래곤 · 2025.03 — 2025.12 · PM</div>
+    <h1 class="hero-title">마케팅24<br><span class="accent">신규 서비스 확장</span></h1>
+    <p class="hero-desc">마케팅24의 서비스 라인업을 본격적으로 확장하는 프로젝트를 단독으로 기획했습니다. 네이버 생태계 상품군 신규 추가부터 글로벌 API 연동, 수동 판매 구조 설계까지 플랫폼의 수익 구조를 다변화하는 전 과정을 담당했습니다.</p>
+    <div class="hero-meta">
+      <span class="meta-chip hi">신규 서비스</span>
+      <span class="meta-chip">단독 기획</span>
+      <span class="meta-chip">API 연동</span>
+      <span class="meta-chip">정책 수립</span>
+      <span class="meta-chip">서비스 확장</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       작업 1. 네이버 블로그 활성화
+  ══════════════════════════════════ -->
+  <div class="phase-block">
+    <div class="work-section">
+      <div class="work-hd rv">
+        <span class="work-num">작업 1</span>
+        <h3 class="work-title">네이버 블로그 활성화 상품 신규 기획</h3>
+        <div class="work-divider"></div>
+      </div>
+      <p class="phase-intro rv" style="--d:.04s;margin-bottom:32px">네이버 블로그는 국내 콘텐츠 마케팅에서 여전히 높은 비중을 차지하지만 마케팅24에는 관련 상품이 없었습니다. 블로그 활성화에 필요한 핵심 지표를 상품화하고, 뷰업과 연동되는 적립 구조까지 함께 설계했습니다.</p>
+      <div class="tri-grid rv" style="--d:.08s">
+        <div class="tc">
+          <p class="tc-label">상품 구성 설계</p>
+          <p class="tc-title">6개 상품 유형 정의</p>
+          <p class="tc-body">블로그 활성화에 필요한 6개 상품 유형을 정의했습니다.</p>
+          <ul class="tc-list">
+            <li>이웃 수 증가: 일 최대 100명 · 최대 5,000명 한도</li>
+            <li>포스팅 공감 수 증가 (일반 / 키워드 검색)</li>
+            <li>포스팅 댓글 증가 (일반 / 키워드 검색)</li>
+            <li>커스텀 댓글 (일반 / 키워드 검색)</li>
+            <li>스크랩 증가 (일반 / 키워드 검색)</li>
+          </ul>
+          <p class="tc-body" style="margin-top:10px">각 상품별 주문 폼, 수량 범위, 단가 정책을 수립했습니다.</p>
+        </div>
+        <div class="tc">
+          <p class="tc-label">정책 수립</p>
+          <p class="tc-title">상품별 운영 정책 세분화</p>
+          <p class="tc-body">상품 특성에 따른 운영 정책을 세분화했습니다.</p>
+          <ul class="tc-list">
+            <li>하루 공감 최대 200개 · 댓글 최대 300개 제한 정책</li>
+            <li>키워드 검색형: 75개 이내 조회 가능 조건 · 검색허용 차단 케이스 정의</li>
+            <li>비공개·초기화 진행중·유효하지 않은 링크 등 유효성 검사 전 항목 정의</li>
+            <li>광고주 차단 계정의 적립 불가 케이스 처리 방침 수립</li>
+          </ul>
+        </div>
+        <div class="tc">
+          <p class="tc-label">뷰업 연동 설계</p>
+          <p class="tc-title">클릭뷰잉 + 오토뷰잉 적립 구조</p>
+          <p class="tc-body">마케팅24 블로그 활성화 주문을 뷰업 사용자가 클릭 또는 오토뷰잉으로 적립할 수 있는 구조를 설계했습니다.</p>
+          <ul class="tc-list">
+            <li>클릭뷰잉 + 오토뷰잉 모두 적용 (일반 댓글 제외)</li>
+            <li>일일 적립 한도: 상품 유형별 30개 기준</li>
+            <li>네이버 계정 등록 → 적립 시도 → 성공/실패 케이스 정의</li>
+            <li>복붙 댓글 방지, 댓글 작성 시간 2분 제한 정책 수립</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         작업 2. 플레이스 · 지식인
+    ══════════════════════════════════ -->
+    <div class="work-section">
+      <div class="work-hd rv">
+        <span class="work-num">작업 2</span>
+        <h3 class="work-title">플레이스 · 지식인 상품 신규 기획</h3>
+        <div class="work-divider"></div>
+      </div>
+      <p class="phase-intro rv" style="--d:.04s;margin-bottom:32px">네이버 플레이스와 지식인은 로컬 비즈니스와 검색 마케팅에서 수요가 높은 영역입니다. 기존 블로그 상품 구조와 일관성을 유지하면서 각 플랫폼 특성에 맞는 상품과 정책을 별도로 설계했습니다.</p>
+      <div class="duo-grid rv" style="--d:.08s">
+        <div class="tc">
+          <p class="tc-label">플레이스 상품</p>
+          <p class="tc-title">알림받기 · 저장 증가</p>
+          <p class="tc-body">플레이스 상품 구조를 설계했습니다.</p>
+          <ul class="tc-list">
+            <li>알림받기 증가: 키워드 75개 이내 조회 조건 · 일일 10개 적립</li>
+            <li>저장 증가: 동일 구조 · 뷰업 클릭뷰잉 + 오토뷰잉 연동</li>
+            <li>주문 폼: 플레이스 링크 + 키워드 입력 · 유효성 검사 정의</li>
+          </ul>
+        </div>
+        <div class="tc">
+          <p class="tc-label">지식인 상품</p>
+          <p class="tc-title">답변 리액션 · 댓글 증가</p>
+          <p class="tc-body">지식인 상품 구조를 설계했습니다.</p>
+          <ul class="tc-list">
+            <li>답변 리액션 증가 (일반 / 키워드 검색)</li>
+            <li>댓글 증가 · 커스텀 댓글 (일반 / 키워드 검색)</li>
+            <li>뷰업 클릭뷰잉 + 오토뷰잉 연동 구조 동일하게 설계</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         작업 3. 블로그 배포형 유형 확장
+    ══════════════════════════════════ -->
+    <div class="work-section">
+      <div class="work-hd rv">
+        <span class="work-num">작업 3</span>
+        <h3 class="work-title">블로그 배포형 상품 유형 확장</h3>
+        <div class="work-divider"></div>
+      </div>
+      <p class="phase-intro rv" style="--d:.04s;margin-bottom:32px">기존 단일 배포형 구조에서 품질 단계별 상품 라인업으로 확장했습니다. 광고주가 예산과 목적에 맞게 선택할 수 있는 구조를 만들었습니다.</p>
+      <div class="mono-grid rv" style="--d:.08s">
+        <div class="tc">
+          <p class="tc-label">상품 유형 세분화</p>
+          <p class="tc-title">일반 / 간편 / 고품질 / 프리미엄 4단계 라인업</p>
+          <p class="tc-body">일반 / 간편 / 고품질 / 프리미엄 4개 유형으로 상품을 세분화하고 각 유형별 주문 폼, 가이드라인 정책, 이미지 처리 방식을 정의했습니다. HTML 기반 주문 내용 전달 방식(브라우저에서 바로 확인)과 이미지 별도 다운로드 구조도 이 단계에서 고도화했습니다.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         작업 4. 해외 API 상품 연동
+    ══════════════════════════════════ -->
+    <div class="work-section">
+      <div class="work-hd rv">
+        <span class="work-num">작업 4</span>
+        <h3 class="work-title">해외 API 상품 연동 기획</h3>
+        <div class="work-divider"></div>
+      </div>
+      <p class="phase-intro rv" style="--d:.04s;margin-bottom:32px">기존 국내 서비스 중심 구조에서 글로벌 SNS 마케팅 수요에 대응하기 위해 해외 패널 API를 통한 상품 확장을 기획했습니다. 서비스 설정 구조 전체를 재설계하고 운영 정책을 수립했습니다.</p>
+      <div class="tri-grid rv" style="--d:.08s">
+        <div class="tc">
+          <p class="tc-label">서비스 구조 설계</p>
+          <p class="tc-title">12개 채널 · 65개+ 상품 · 3단계 구조</p>
+          <p class="tc-body">인스타그램 · 유튜브 · 페이스북 · 틱톡 · X · 네이버 · 카카오 · 앱마케팅 · SEO · 디스코드 · 사운드클라우드 · 스포티파이까지 12개 채널의 65개 이상 상품을 채널 → 카테고리 → 상품 3단계 구조로 설계하고 어드민 서비스 설정 화면을 기획했습니다.</p>
+        </div>
+        <div class="tc">
+          <p class="tc-label">주문 정책 수립</p>
+          <p class="tc-title">일반 · 자동 · 패키지 3가지 주문 유형</p>
+          <p class="tc-body">일반 · 자동 · 패키지 3가지 주문 유형별 정책을 정의했습니다.</p>
+          <ul class="tc-list">
+            <li>분할 주문: n분마다 n개 파생 · 소수점 처리 · 24시간 초과 불가 정책</li>
+            <li>오버플로우: 추가 수량 퍼센티지 설정 · 환불 제외 처리 기준</li>
+            <li>패키지: 포함 상품별 진행률 산출 · 정지 시 환불 처리 방침</li>
+            <li>실패 케이스: 재전송 · API 주문번호 추가 · 수동 상태 변경 흐름 정의</li>
+          </ul>
+        </div>
+        <div class="tc">
+          <p class="tc-label">어드민 고도화</p>
+          <p class="tc-title">주문관리 운영 효율화</p>
+          <p class="tc-body">주문관리 전반의 운영 효율을 높이는 기능을 함께 기획했습니다.</p>
+          <ul class="tc-list">
+            <li>주문번호 다중 선택 복사 (마케팅24 번호 / API 번호 구분)</li>
+            <li>부분취소(Set partial) 처리 및 환불 연동 정책</li>
+            <li>주문 히스토리: 공급자 변경 · 상태값 변경 · 담당자 기록</li>
+            <li>통계 리포트: 플랫폼별 판매순위 · 매출순위 전체 서비스 노출</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         작업 5. 수동 API 판매 구조
+    ══════════════════════════════════ -->
+    <div class="work-section">
+      <div class="work-hd rv">
+        <span class="work-num">작업 5</span>
+        <h3 class="work-title">수동 API 판매 구조 설계</h3>
+        <div class="work-divider"></div>
+      </div>
+      <p class="phase-intro rv" style="--d:.04s;margin-bottom:32px">자동화된 API 연동이 어려운 상품군을 운영팀이 수동으로 처리할 수 있는 판매 구조가 필요했습니다. 별도 공급자 유형과 주문 관리 흐름을 새로 설계했습니다.</p>
+      <div class="duo-grid rv" style="--d:.08s">
+        <div class="tc">
+          <p class="tc-label">수동 API 구조 설계</p>
+          <p class="tc-title">공급자 유형 신규 추가 &amp; 주문 흐름 정의</p>
+          <p class="tc-body">수동 API 공급자 유형을 신규 추가하고 주문 유형(URL · 휴대폰번호 · 계정 · 일 진행건수)에 따른 주문 폼과 상태값 관리 흐름을 정의했습니다.</p>
+          <ul class="tc-list">
+            <li>주문 상태: 대기 → 진행중 → 정지 / 완료 흐름</li>
+            <li>주문 접수 시 메타모스트 알림 연동 설계</li>
+            <li>수동 주문관리 별도 테이블 구성 (주문번호 · 채널 · 상품명 · 상태 · 설정)</li>
+          </ul>
+        </div>
+        <div class="tc">
+          <p class="tc-label">Manual 상태 도입</p>
+          <p class="tc-title">해외 API 주문 수동 전환 구조</p>
+          <p class="tc-body">기존 해외 API 주문을 수동 처리로 전환할 수 있는 Manual 상태값을 신규 설계했습니다. 진행중 주문을 Manual로 전환하면 API 공급자와의 연결을 끊고 관리자가 직접 상태를 제어할 수 있습니다.</p>
+          <ul class="tc-list">
+            <li>분할 주문의 차일드 단위 Manual 전환 정책</li>
+            <li>마더-차일드 상태 동기화 기준 정의</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Result highlight -->
+  <div class="result-box rv">
+    <p class="result-label">결과 하이라이트</p>
+    <div class="result-list">
+      <p class="result-item">네이버 블로그 · 플레이스 · 지식인 상품군 신규 설계</p>
+      <p class="result-item">12개 채널 65개 이상 해외 API 상품 연동 구조 기획</p>
+      <p class="result-item">일반 · 자동 · 패키지 · 수동 4가지 주문 유형 정책 수립</p>
+      <p class="result-item">수동 API 판매 구조 및 Manual 상태값 신규 설계</p>
+      <p class="result-item">전체 신규 서비스 기획 단독 수행</p>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <span class="footer-logo">CHANY</span>
+    <span class="footer-copy">© 2026 Yuchan Kim</span>
+    <span class="footer-tag">마케팅24 · 스마일드래곤 · 2025</span>
+  </footer>
+
+</main>
+
+<script>
+const cd = document.getElementById('cd'), cr = document.getElementById('cr');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cd.style.left = mx+'px'; cd.style.top = my+'px'; });
+(function loop(){ rx += (mx-rx)*.12; ry += (my-ry)*.12; cr.style.left = rx+'px'; cr.style.top = ry+'px'; requestAnimationFrame(loop); })();
+document.querySelectorAll('a,button').forEach(el => { el.addEventListener('mouseenter', () => document.body.classList.add('ch')); el.addEventListener('mouseleave', () => document.body.classList.remove('ch')); });
+const obs = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('vis'); }), { threshold: 0.08 });
+document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

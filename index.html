@@ -14,7 +14,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --sidebar-w: 260px;
+  --sidebar-w: 220px;
   --bg:       #0a0e14;
   --bg2:      #0f1520;
   --bg3:      #141c28;
@@ -989,7 +989,7 @@ body.ch #cr {
    RESPONSIVE
 ═══════════════════════════════════════ */
 @media (max-width: 1024px) {
-  :root { --sidebar-w: 220px; }
+  :root { --sidebar-w: 200px; }
   .hero-inner { grid-template-columns: 1fr; }
   .hero-stats-panel { display: none; }
   .proj-card.featured { grid-column: auto; grid-template-columns: 1fr; }
@@ -1097,6 +1097,10 @@ body.ch #cr {
         <p class="hero-desc">
           복잡한 비즈니스 요구와 기술적 제약을 구조화하여<br>
           실행 가능한 서비스로 완성하는 PM입니다.
+        </p>
+        <p style="font-size:12px;color:var(--muted);line-height:1.8;margin-top:14px">
+          AI 도구를 기획 업무에 직접 접목합니다.<br>
+          이 포트폴리오는 Claude · Gemini · Google AntiGravity를<br>활용해 직접 제작했습니다.
         </p>
 
         <div class="hero-btns">
@@ -1423,6 +1427,24 @@ body.ch #cr {
           </div>
         </div>
       </div>
+
+      <div class="proj-card prev rv">
+        <div class="pc-num">07</div>
+        <div class="pc-top"><span class="pc-company">스마일드래곤</span><span class="pc-year">2024.06 – 2025.03</span></div>
+        <h3 class="pc-title">마케팅24 서비스 안정화 &amp; 기능추가</h3>
+        <p class="pc-desc">배포 후 서비스 장애 대응을 주도하며 마케팅24 기획을 단독 담당. 대행사 맞춤 PC 주문내역 페이지를 기획·배포하고, 자동 상품 후불제 전환으로 결제 구조를 전면 개선했습니다.</p>
+        <div class="pc-tags"><span class="pc-tag">서비스 기획</span><span class="pc-tag">장애 대응</span><span class="pc-tag">PC 기획</span><span class="pc-tag">정책 수립</span><span class="pc-tag">개발 협업</span></div>
+        <div class="pc-footer"><span class="pc-role">기여도 100% · PM</span><a href="mkt24.html" class="pc-link" style="background:var(--accent);color:#0a0e14;border-color:var(--accent)" onclick="event.stopPropagation()">상세보기</a></div>
+      </div>
+
+      <div class="proj-card prev rv">
+        <div class="pc-num">08</div>
+        <div class="pc-top"><span class="pc-company">스마일드래곤</span><span class="pc-year">2025.03 – 2025.12</span></div>
+        <h3 class="pc-title">마케팅24 신규 서비스 확장</h3>
+        <p class="pc-desc">마케팅24에 네이버 블로그 활성화·플레이스·지식인 상품과 해외 API 연동, 수동 API 판매 구조까지 신규 서비스 전체를 단독으로 기획했습니다.</p>
+        <div class="pc-tags"><span class="pc-tag">신규 서비스</span><span class="pc-tag">단독 기획</span><span class="pc-tag">API 연동</span><span class="pc-tag">정책 수립</span><span class="pc-tag">서비스 확장</span></div>
+        <div class="pc-footer"><span class="pc-role">기여도 100% · PM</span><a href="mkt24-v2.html" class="pc-link" style="background:var(--accent);color:#0a0e14;border-color:var(--accent)" onclick="event.stopPropagation()">상세보기</a></div>
+      </div>
     </div>
 
     <!-- 이전 경력 -->
@@ -1481,6 +1503,7 @@ body.ch #cr {
         <div class="pc-tags"><span class="pc-tag">플랫폼</span><span class="pc-tag">UI/UX</span><span class="pc-tag">퍼블리싱</span></div>
         <div class="pc-footer"><span class="pc-role">디자인 100% · 기획 60%</span><div style="display:flex;gap:8px"><a href="mozac.html" class="pc-link" style="background:var(--accent);color:#0a0e14;border-color:var(--accent)" onclick="event.stopPropagation()">상세보기</a><a href="https://makecontents.com/" target="_blank" class="pc-link" onclick="event.stopPropagation()">Visit ↗</a></div></div>
       </div>
+
 
     </div>
 
@@ -1736,7 +1759,10 @@ body.ch #cr {
 
   <footer class="footer">
     <span class="footer-logo">CHANY</span>
-    <p class="footer-copy">© 2026 Yuchan Kim. All rights reserved.</p>
+    <div>
+      <p class="footer-copy">© 2026 Yuchan Kim. All rights reserved.</p>
+      <p style="font-family:var(--en);font-size:10px;color:var(--dim);margin-top:5px">Built with Claude · Gemini · Google AntiGravity ✦</p>
+    </div>
     <p class="footer-tag">니즈를 파악하는 기획자</p>
   </footer>
 
